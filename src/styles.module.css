@@ -1,7 +1,12 @@
 .container {
   position: relative;
   width: 100%;
+  max-width: 100%;
+  flex-grow: 0;
+  flex-basis: 100%;
   margin-left: -8px;
+  margin: 0;
+  box-sizing: border-box;
 }
 
 .arrow-button-container {
@@ -17,38 +22,38 @@
   right: -24px;
 }
 
-.arrow-button {
+button.arrow-button {
   height: 100%;
   border-radius: 0px;
 }
 
-.arrow-button > svg {
+button.arrow-button > svg {
   width: 2em;
   height: 3em;
   transition: transform 0.1s ease-out;
 }
 
-.arrow-button:hover > svg {
+button.arrow-button:hover > svg {
   transform: scale(1.15, 1.15);
 }
 
-.scrollableContent {
+.scrollable-content {
   width: 100%;
   overflow-x: auto;
   scrollbar-width: none;
   pointer-events: none;
 }
 
-.scrollableContent::-webkit-scrollbar {
+.scrollable-content::-webkit-scrollbar {
   display: none;
 }
 
-.listItem {
+li.list-item {
   padding-left: 0;
   padding-right: 0;
 }
 
-.list {
+ul.list {
   display: flex;
   flex-direction: row;
   padding: 0;

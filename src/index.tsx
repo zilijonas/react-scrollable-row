@@ -43,17 +43,11 @@ const SlideableComponent: React.FC<Props> = ({
       </div>
       <div ref={listRef} className={styles['scrollable-content']}>
         <ul data-current="0" className={styles['list']}>
-          {Array.isArray(items) ? (
-            items.map((c, idx) => (
-              <li key={idx} className={styles['list-item']} style={{ marginRight: itemsMargin }}>
-                {c}
-              </li>
-            ))
-          ) : (
-            <li className={styles['list-item']} style={{ marginRight: itemsMargin }}>
-              {items}
+          {items.map((c, idx) => (
+            <li key={idx} className={styles['list-item']} style={{ marginRight: itemsMargin }}>
+              {c}
             </li>
-          )}
+          ))}
           {placeholdersCount > 0 &&
             Array.from(Array(placeholdersCount).keys()).map(k => (
               <li key={k} style={{ marginRight: itemsMargin }}>

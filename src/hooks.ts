@@ -53,7 +53,8 @@ export const useSlideable = (
         const scrollStartReached = scrollPosition.current <= 0;
         const scrollEndReached = scrollPosition.current >= listEl.scrollWidth - stepSize.current;
         const shouldHide = allItemsFit || isLast ? scrollEndReached : scrollStartReached;
-        (button as any).style = { display: shouldHide ? 'none' : 'block', width: itemWidth() / 3, ...arrowsStyle };
+        (button as any).style = `${shouldHide ? 'display: none;' : ''};
+          width: ${itemWidth() / 3}px; cursor: pointer; ${arrowsStyle.cssText ?? ''}`;
       });
     };
 
@@ -135,7 +136,7 @@ export const useSlideable = (
 const setItemsSize = (listEl: HTMLDivElement | null, containerEl: HTMLDivElement | null, itemsPerRow: number) => {
   const width = (containerEl?.clientWidth ?? 0) / itemsPerRow;
   items(listEl).forEach(item => {
-    (item as any).style = `width: ${width}px; min-width: ${width}px; ${item.style.cssText}`;
+    (item as any).style = `width: ${width}px; min-width: ${width}px; ${item.style.cssText ?? ''}`;
   });
 };
 
