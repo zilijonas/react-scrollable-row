@@ -1,19 +1,20 @@
 import React from 'react';
-import smoothscroll from 'smoothscroll-polyfill';
-import { ItemsPerResolutionConfig, useScrollableRow } from './hook';
 import styles from './styles.module.css';
+import smoothscroll from 'smoothscroll-polyfill';
+import { ItemsPerResolutionConfig, useSlideable } from './hooks';
 
 smoothscroll.polyfill();
 
 interface Props {
-  items: React.ReactNode;
-  itemsPerResolution?: ItemsPerResolutionConfig;
+  items: JSX.Element[];
+  itemsPerResolutionConfig?: ItemsPerResolutionConfig;
   marginBetweenItems?: number | string;
   looped?: boolean;
-  arrowsStyles?: CSSStyleDeclaration;
+  placeholder?: JSX.Element;
 }
 
-const DEFAULT_ITEMS_PER_RESOLUTION: ItemsPerResolutionConfig = {
+const DEFAULT_ITEMS_PER_RESOLUTION_CONFIG: ItemsPerResolutionConfig = {
+  480: 2,
   900: 3,
   1500: 4,
   max: 5,
@@ -22,18 +23,19 @@ const DEFAULT_ITEMS_PER_RESOLUTION: ItemsPerResolutionConfig = {
 const SlideableComponent: React.FC<Props> = ({
   items,
   looped,
-  arrowsStyles,
+  placeholder,
   marginBetweenItems = '8px',
-  itemsPerResolution = DEFAULT_ITEMS_PER_RESOLUTION,
+  itemsPerResolutionConfig = DEFAULT_ITEMS_PER_RESOLUTION_CONFIG,
 }) => {
-  const { listRef, containerRef, scrollBack, scrollForward } = useScrollableRow(
-    itemsPerResolution,
+  const { listRef, containerRef, scrollBack, scrollForward, itemsPerResolution } = useSlideable(
+    itemsPerResolutionConfig,
     looped,
-    arrowsStyles,
   );
+  const itemsMargin = typeof marginBetweenItems === 'number' ? marginBetweenItems + 'px' : marginBetweenItems;
+  const placeholdersCount = placeholder ? itemsPerResolution - items.length : 0;
 
   return (
-    <div className={styles['container']} ref={containerRef}>
+    <div ref={containerRef} className={styles['container']}>
       <div className={styles['arrow-button-container']}>
         <button onClick={scrollBack} className={styles['arrow-button']}>
           {'<'}
@@ -43,15 +45,21 @@ const SlideableComponent: React.FC<Props> = ({
         <ul data-current="0" className={styles['list']}>
           {Array.isArray(items) ? (
             items.map((c, idx) => (
-              <li key={idx} className={styles['list-item']} style={{ marginRight: marginBetweenItems }}>
+              <li key={idx} className={styles['list-item']} style={{ marginRight: itemsMargin }}>
                 {c}
               </li>
             ))
           ) : (
-            <li className={styles['list-item']} style={{ marginRight: marginBetweenItems }}>
+            <li className={styles['list-item']} style={{ marginRight: itemsMargin }}>
               {items}
             </li>
           )}
+          {placeholdersCount > 0 &&
+            Array.from(Array(placeholdersCount).keys()).map(k => (
+              <li key={k} style={{ marginRight: itemsMargin }}>
+                {placeholder}
+              </li>
+            ))}
         </ul>
       </div>
       <div className={styles['arrow-button-container']}>
