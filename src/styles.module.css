@@ -1,9 +1,59 @@
-/* add css module styles here (optional) */
+.container {
+  position: relative;
+  width: 100%;
+  margin-left: -8px;
+}
 
-.test {
-  margin: 2em;
-  padding: 0.5em;
-  border: 2px solid #000;
-  font-size: 2em;
-  text-align: center;
+.arrow-button-container {
+  position: absolute;
+  z-index: 2;
+  left: -24px;
+  top: 8px;
+  bottom: 8px;
+}
+
+.arrow-button-container:not(:first-child) {
+  left: auto;
+  right: -24px;
+}
+
+.arrow-button {
+  height: 100%;
+  border-radius: 0px;
+}
+
+.arrow-button > svg {
+  width: 2em;
+  height: 3em;
+  transition: transform 0.1s ease-out;
+}
+
+.arrow-button:hover > svg {
+  transform: scale(1.15, 1.15);
+}
+
+.scrollableContent {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+  pointer-events: none;
+}
+
+.scrollableContent::-webkit-scrollbar {
+  display: none;
+}
+
+.listItem {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.list {
+  display: flex;
+  flex-direction: row;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  list-style-type: none;
+  pointer-events: fill;
 }

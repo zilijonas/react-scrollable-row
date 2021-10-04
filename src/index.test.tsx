@@ -1,7 +1,7 @@
-import { ExampleComponent } from '.'
+import { Slideable } from '.';
 
-describe('ExampleComponent', () => {
+describe('Slideable', () => {
   it('is truthy', () => {
-    expect(ExampleComponent).toBeTruthy()
-  })
-})
+    expect(Slideable).toBeTruthy();
+  });
+});
