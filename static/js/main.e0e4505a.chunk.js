@@ -1,0 +1,2 @@
+(this["webpackJsonpreact-slideable-example"]=this["webpackJsonpreact-slideable-example"]||[]).push([[0],[,,,function(e,n,t){"use strict";t.r(n);t(4);var a=t(0),l=t.n(a),r=t(1),c=t.n(r),u=l.a.lazy((function(){return t.e(3).then(t.bind(null,10)).then((function(e){return{default:e.App}}))}));c.a.render(l.a.createElement(l.a.Suspense,{fallback:l.a.createElement("div",null,"Loading...")},l.a.createElement(u,null)),document.getElementById("root"))},function(e,n,t){}],[[3,1,2]]]);
+//# sourceMappingURL=main.e0e4505a.chunk.js.map
