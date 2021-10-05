@@ -21,7 +21,7 @@ import React, { Component } from 'react';
 import { Slideable, ItemsPerResolutionConfig } from 'react-slideable';
 import 'react-slideable/dist/index.css';
 
-const DEFAULT_ITEMS_PER_RESOLUTION_CONFIG: ItemsPerResolutionConfig = {
+const SLIDEABLE_RES_CONFIG: ItemsPerResolutionConfig = {
   480: 2,
   900: 3,
   1500: 4,
@@ -31,11 +31,11 @@ const DEFAULT_ITEMS_PER_RESOLUTION_CONFIG: ItemsPerResolutionConfig = {
 const Example: React.FC = () => {
   return (
     <Slideable
-      looped={false} // Makes the list infinite by cloning the items of the list
+      looped={false} // Makes the list infinite by cloning the items of the list. Elements count must be bigger than the list is able to display with the given resolution config
       placeholderElement={undefined} // JSX Element to display when looped={false} and there are less items in the list than it is set to display
       pixelsBetweenItems={8} // Margin between items
-      arrowsStyle={{ color: '#000' }} // Style of arrow buttons
-      itemsPerResolutionConfig={DEFAULT_ITEMS_PER_RESOLUTION_CONFIG} // You can set how many items should the list on specific width show
+      buttonsStyle={{ background: '#000' }} // Style of arrow buttons
+      itemsPerResolutionConfig={SLIDEABLE_RES_CONFIG} // You can set how many items should the list on specific width show
       items={items.map(item => (
         <div key={item} style={{ width: '100%' }}>
           {item}

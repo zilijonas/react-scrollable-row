@@ -30,11 +30,11 @@ code {
   font-weight: bold;
   font-size: 2rem;
   color: #fff;
-  background: #f00a;
+  background: #f66a;
 }
 
 label {
-  font-size: 2rem;
+  font-size: 1.6rem;
 }
 
 input[type='number'] {
@@ -47,4 +47,5 @@ input[type='number'] {
 
 .slideable-container {
   border: 5px solid #0000;
+  margin-bottom: 0.5em;
 }

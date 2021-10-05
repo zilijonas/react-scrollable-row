@@ -23,7 +23,7 @@
   right: -24px;
 }
 
-button.arrow-button {
+.arrow-button {
   height: 50px;
   width: 50px;
   border-radius: 50%;
@@ -36,17 +36,17 @@ button.arrow-button {
   cursor: pointer;
 }
 
-button.arrow-button > svg {
+.arrow-button > svg {
   width: 2em;
   height: 2em;
   padding-right: 6px;
 }
 
-.arrow-button-container:not(:first-child) > button.arrow-button > svg {
+.arrow-button-container:not(:first-child) > .arrow-button > svg {
   transform: rotateY(180deg);
 }
 
-button.arrow-button:hover {
+.arrow-button:hover {
   transform: scale(1.05, 1.05);
 }
 
