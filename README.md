@@ -31,16 +31,16 @@ const SLIDEABLE_RES_CONFIG: ItemsPerResolutionConfig = {
 const Example: React.FC = () => {
   return (
     <Slideable
-      looped={false} // Makes the list infinite by cloning the items of the list. Elements count must be bigger than the list is able to display with the given resolution config
-      placeholderElement={undefined} // JSX Element to display when looped={false} and there are less items in the list than it is set to display
-      pixelsBetweenItems={8} // Margin between items
-      buttonsStyle={{ background: '#000' }} // Style of arrow buttons
-      itemsPerResolutionConfig={SLIDEABLE_RES_CONFIG} // You can set how many items should the list on specific width show
+      looped={false} // Makes the list infinite by cloning the items of the list. Elements count must be bigger than the list is able to display with the given `itemsPerResolutionConfig`.
+      placeholderElement={undefined} // JSX Element to display when `looped` is set to `false` and there are less items in the list than configuration lets list display.
+      pixelsBetweenItems={8} // Margin between list items.
+      buttonsStyle={{ background: '#000' }} // Style of the arrow buttons.
+      itemsPerResolutionConfig={SLIDEABLE_RES_CONFIG} // You can set how many items will list display at given resolutions.
       items={items.map(item => (
         <div key={item} style={{ width: '100%' }}>
           {item}
         </div>
-      ))} // List of JSX elements. Since item's width is dynamic and calculated from the list's width, these JSX elements' width must be `100%`
+      ))} // Array of your list items. In order for dynamic items sizing to work, all items width must be set to `100%`.
     />
   );
 };

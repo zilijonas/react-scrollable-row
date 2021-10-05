@@ -7,11 +7,31 @@ import { ArrowIcon } from './assets/ArrowIcon';
 smoothscroll.polyfill();
 
 export interface SlideableProps {
+  /**
+   * Array of your list items. In order for dynamic items sizing to work, all items width must be set to `100%`.
+   */
   items: JSX.Element[];
+  /**
+   * You can set how many items will list display at given resolutions.
+   */
   itemsPerResolutionConfig?: ItemsPerResolutionConfig;
+  /**
+   * Margin between list items.
+   */
   pixelsBetweenItems?: number;
+  /**
+   * Makes the list infinite by cloning the items of the list.
+   * Elements count must be bigger than the list is able to display with the given `itemsPerResolutionConfig`.
+   */
   looped?: boolean;
+  /**
+   * JSX Element to display when `looped` is set to `false`
+   * and there are less items in the list than configuration lets list display.
+   */
   placeholderElement?: JSX.Element;
+  /**
+   * Style of the arrow buttons.
+   */
   buttonsStyle?: React.CSSProperties;
 }
 
