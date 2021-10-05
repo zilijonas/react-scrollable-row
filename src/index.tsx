@@ -11,7 +11,7 @@ interface Props {
   itemsPerResolutionConfig?: ItemsPerResolutionConfig;
   pixelsBetweenItems?: number;
   looped?: boolean;
-  placeholder?: JSX.Element;
+  placeholderElement?: JSX.Element;
   arrowsStyle?: Partial<CSSStyleDeclaration>;
 }
 
@@ -25,7 +25,7 @@ const DEFAULT_ITEMS_PER_RESOLUTION_CONFIG: ItemsPerResolutionConfig = {
 const SlideableComponent: React.FC<Props> = ({
   items,
   looped = false,
-  placeholder,
+  placeholderElement,
   arrowsStyle = {},
   pixelsBetweenItems = 8,
   itemsPerResolutionConfig = DEFAULT_ITEMS_PER_RESOLUTION_CONFIG,
@@ -36,7 +36,7 @@ const SlideableComponent: React.FC<Props> = ({
     arrowsStyle,
     pixelsBetweenItems,
   });
-  const placeholdersCount = placeholder ? itemsPerResolution - items.length : 0;
+  const placeholdersCount = placeholderElement ? itemsPerResolution - items.length : 0;
   const marginRight = pixelsBetweenItems + 'px';
 
   return (
@@ -56,7 +56,7 @@ const SlideableComponent: React.FC<Props> = ({
           {placeholdersCount > 0 &&
             Array.from(Array(placeholdersCount).keys()).map(k => (
               <li key={k} className={styles['list-item']} style={{ marginRight }}>
-                {placeholder}
+                {placeholderElement}
               </li>
             ))}
         </ul>
@@ -71,3 +71,4 @@ const SlideableComponent: React.FC<Props> = ({
 };
 
 export const Slideable = React.memo(SlideableComponent);
+export { ItemsPerResolutionConfig } from './hooks';
