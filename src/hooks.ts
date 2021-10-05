@@ -4,11 +4,14 @@ type HTMLListElement = HTMLUListElement & { current: string };
 
 export type ItemsPerResolutionConfig = { [pixels: number]: number } & { max: number };
 
-export const useSlideable = (
-  itemsPerResolutionConfig: ItemsPerResolutionConfig,
-  loopedScroll: boolean = false,
-  arrowsStyle: Partial<CSSStyleDeclaration> = {},
-) => {
+interface Props {
+  loopedScroll: boolean;
+  itemsPerResolutionConfig: ItemsPerResolutionConfig;
+  arrowsStyle: Partial<CSSStyleDeclaration>;
+  pixelsBetweenItems: number;
+}
+
+export const useSlideable = ({ itemsPerResolutionConfig, loopedScroll, arrowsStyle, pixelsBetweenItems }: Props) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
   const scrollPosition = useRef<number>(0);
@@ -41,9 +44,9 @@ export const useSlideable = (
     const listEl = listRef.current;
     const containerEl = containerRef.current;
     stepSize.current = containerEl.clientWidth ?? 0;
-    const itemWidth = () => (containerEl.clientWidth ?? 0) / itemsPerRow();
 
-    const updateItemsSize = () => setItemsSize(listRef.current, containerRef.current, itemsPerRow());
+    const updateItemsSize = () =>
+      setItemsSize(listRef.current, containerRef.current, itemsPerRow(), pixelsBetweenItems);
 
     const toggleButtons = () => {
       const buttons = Array.from(containerEl.getElementsByTagName('button'));
@@ -53,8 +56,8 @@ export const useSlideable = (
         const scrollStartReached = scrollPosition.current <= 0;
         const scrollEndReached = scrollPosition.current >= listEl.scrollWidth - stepSize.current;
         const shouldHide = allItemsFit || isLast ? scrollEndReached : scrollStartReached;
-        (button as any).style = `${shouldHide ? 'display: none;' : ''};
-          width: ${itemWidth() / 3}px; cursor: pointer; ${arrowsStyle.cssText ?? ''}`;
+        (button as any).style = `${button.style.cssText ?? ''}; ${arrowsStyle.cssText ?? ''}`;
+        button.style.display = shouldHide ? 'none' : 'block';
       });
     };
 
@@ -99,27 +102,31 @@ export const useSlideable = (
       listEl?.removeEventListener('scroll', toggleButtons);
       loopedScroll && listEl?.removeEventListener('scroll', createElementsForLoop);
     };
-  }, [loopedScroll, itemsPerRow, arrowsStyle]);
+  }, [loopedScroll, itemsPerRow, arrowsStyle, pixelsBetweenItems]);
 
   useLayoutEffect(() => {
-    setItemsSize(listRef.current, containerRef.current, itemsPerRow());
-  }, [itemsPerRow, itemsPerResolution]);
+    setItemsSize(listRef.current, containerRef.current, itemsPerRow(), pixelsBetweenItems);
+  }, [itemsPerRow, itemsPerResolution, pixelsBetweenItems]);
 
   const handleScrollBack = useCallback(() => {
     if (scrollPosition.current < 0) return;
     const scrollEndReached = scrollPosition.current + stepSize.current >= wholeScrollWidth();
-    const newScrollPos = scrollEndReached
-      ? wholeScrollWidth() - stepSize.current * 2
-      : scrollPosition.current - stepSize.current;
+    const newScrollPos =
+      (scrollEndReached ? wholeScrollWidth() - stepSize.current * 2 : scrollPosition.current - stepSize.current) -
+      pixelsBetweenItems;
     scrollPosition.current = newScrollPos > 0 ? newScrollPos : 0;
     scrollTo(listRef.current, scrollPosition.current);
-  }, []);
+  }, [pixelsBetweenItems]);
 
   const handleScrollForward = useCallback(() => {
     if (scrollPosition.current > wholeScrollWidth()) return;
-    scrollPosition.current = scrollPosition.current > 0 ? scrollPosition.current + stepSize.current : stepSize.current;
+    const endWillBeReached = scrollPosition.current + stepSize.current >= wholeScrollWidth();
+    scrollPosition.current =
+      (scrollPosition.current > 0 ? scrollPosition.current + stepSize.current : stepSize.current) +
+      pixelsBetweenItems -
+      (endWillBeReached ? pixelsBetweenItems / itemsPerResolution : 0);
     scrollTo(listRef.current, scrollPosition.current);
-  }, []);
+  }, [pixelsBetweenItems, itemsPerResolution]);
 
   return useMemo(
     () => ({
@@ -133,8 +140,14 @@ export const useSlideable = (
   );
 };
 
-const setItemsSize = (listEl: HTMLDivElement | null, containerEl: HTMLDivElement | null, itemsPerRow: number) => {
-  const width = (containerEl?.clientWidth ?? 0) / itemsPerRow;
+const setItemsSize = (
+  listEl: HTMLDivElement | null,
+  containerEl: HTMLDivElement | null,
+  itemsPerRow: number,
+  pixelsBetweenItems: number,
+) => {
+  const spaceWidth = (containerEl?.clientWidth ?? 0) / itemsPerRow;
+  const width = spaceWidth - pixelsBetweenItems + pixelsBetweenItems / itemsPerRow;
   items(listEl).forEach(item => {
     (item as any).style = `width: ${width}px; min-width: ${width}px; ${item.style.cssText ?? ''}`;
   });
