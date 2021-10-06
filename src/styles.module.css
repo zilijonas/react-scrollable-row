@@ -8,65 +8,76 @@
   box-sizing: border-box;
 }
 
-.arrow-button-container {
+.buttonContainer {
   position: absolute;
   z-index: 2;
-  left: -24px;
+  left: 0px;
   top: 0px;
   bottom: 0px;
   display: flex;
   align-items: center;
 }
 
-.arrow-button-container:not(:first-child) {
+.buttonContainer:not(:first-child) {
   left: auto;
-  right: -24px;
+  right: 0px;
 }
 
-.arrow-button {
-  height: 50px;
-  width: 50px;
-  border-radius: 50%;
-  border: 2px solid #010002;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.15s ease-out;
-  background: #fffa;
-  cursor: pointer;
-}
-
-.arrow-button > svg {
-  width: 2em;
-  height: 2em;
-  padding-right: 6px;
-}
-
-.arrow-button-container:not(:first-child) > .arrow-button > svg {
+.buttonContainer:not(:first-child) > .button > svg {
   transform: rotateY(180deg);
 }
 
-.arrow-button:hover {
-  transform: scale(1.05, 1.05);
+.button {
+  position: relative;
+  height: 100%;
+  width: 50px;
+  border: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(-90deg, #fff0 0%, #fffa 100%);
+  cursor: pointer;
 }
 
-.scrollable-content {
+.buttonContainer:not(:first-child) > .button {
+  background: linear-gradient(90deg, #fff0 0%, #fffa 100%);
+}
+
+.button:before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: -1;
+  content: '';
+  opacity: 0;
+  background: #fffa;
+  transition: opacity 0.3s ease-out;
+}
+
+.button:hover:before {
+  opacity: 1;
+}
+
+.button > svg {
+  width: 2.2em;
+  height: 2.2em;
+  padding-right: 6px;
+}
+
+.scrollableContent {
   width: 100%;
   overflow-x: auto;
   scrollbar-width: none;
   pointer-events: none;
 }
 
-.scrollable-content::-webkit-scrollbar {
+.scrollableContent::-webkit-scrollbar {
   display: none;
 }
 
-li.list-item {
-  padding-left: 0;
-  padding-right: 0;
-}
-
-ul.list {
+.list {
   display: flex;
   flex-direction: row;
   padding: 0;
@@ -74,4 +85,9 @@ ul.list {
   width: 100%;
   list-style-type: none;
   pointer-events: fill;
+}
+
+.listItem {
+  padding-left: 0;
+  padding-right: 0;
 }

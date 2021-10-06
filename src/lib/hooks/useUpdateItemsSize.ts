@@ -7,12 +7,12 @@ interface Props {
   listEl: HTMLDivElement | null;
   containerEl: HTMLDivElement | null;
   pixelsBetweenItems: number;
-  renderedFittedItemsCount: number;
+  fittedItemsCount: number;
 }
 
-export const useUpdateItemsSize = ({ containerEl, listEl, pixelsBetweenItems, renderedFittedItemsCount }: Props) => {
+export const useUpdateItemsSize = ({ containerEl, listEl, pixelsBetweenItems, fittedItemsCount }: Props) => {
   useLayoutEffect(() => {
-    const updateItemsSize = () => setItemsSize(listEl, containerEl, renderedFittedItemsCount, pixelsBetweenItems);
+    const updateItemsSize = () => setItemsSize(listEl, containerEl, fittedItemsCount, pixelsBetweenItems);
 
     updateItemsSize();
     window.addEventListener('resize', updateItemsSize);
@@ -20,7 +20,7 @@ export const useUpdateItemsSize = ({ containerEl, listEl, pixelsBetweenItems, re
     return () => {
       window.removeEventListener('resize', updateItemsSize);
     };
-  }, [containerEl, renderedFittedItemsCount, listEl, pixelsBetweenItems]);
+  }, [containerEl, fittedItemsCount, listEl, pixelsBetweenItems]);
 };
 
 const setItemsSize = (

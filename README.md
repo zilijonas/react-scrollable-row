@@ -23,8 +23,8 @@ import 'react-slideable/dist/index.css';
 
 const SLIDEABLE_RES_CONFIG: ItemsPerResolutionConfig = {
   480: 2,
-  900: 3,
-  1500: 4,
+  768: 3,
+  1200: 4,
   max: 5,
 };
 

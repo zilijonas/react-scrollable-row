@@ -1,2 +1,5 @@
-export { Slideable, SlideableProps } from './Slideable';
-export { ItemsPerResolutionConfig } from './hooks/common';
+import smoothscroll from 'smoothscroll-polyfill';
+
+smoothscroll.polyfill();
+
+export * from './lib';

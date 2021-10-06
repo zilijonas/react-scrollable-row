@@ -1,10 +1,11 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { useToggleButtons } from './useToggleButtons';
 import { useItemsLoop } from './useItemsLoop';
-import { useItemsPerResolution } from './useItemsPerResolution';
+import { useFittedItemsCount } from './useFittedItemsCount';
 import { useResetScroll } from './useResetScroll';
 import { useUpdateItemsSize } from './useUpdateItemsSize';
-import { ItemsPerResolutionConfig, scrollTo } from './common';
+import { ItemsPerResolutionConfig } from '../types';
+import { scrollTo } from './common';
 
 interface Props {
   looped: boolean;
@@ -24,7 +25,7 @@ export const useSlideable = ({ itemsPerResolutionConfig, looped, pixelsBetweenIt
   const updateStepSize = useCallback((value: number) => (stepSize.current = value), []);
   const updateScrollPosition = useCallback((value: number) => (scrollPosition.current = value), []);
 
-  const { renderedFittedItemsCount } = useItemsPerResolution({
+  const { fittedItemsCount } = useFittedItemsCount({
     containerEl: containerRef,
     itemsPerResolutionConfig,
   });
@@ -33,12 +34,12 @@ export const useSlideable = ({ itemsPerResolutionConfig, looped, pixelsBetweenIt
     containerEl: containerRef,
     listEl: listRef,
     pixelsBetweenItems,
-    renderedFittedItemsCount,
+    fittedItemsCount,
   });
   useToggleButtons({
     containerEl: containerRef,
     listEl: listRef,
-    renderedFittedItemsCount,
+    fittedItemsCount,
     getStepSize,
     getScrollPosition,
   });
@@ -61,9 +62,9 @@ export const useSlideable = ({ itemsPerResolutionConfig, looped, pixelsBetweenIt
     scrollPosition.current =
       (scrollPosition.current > 0 ? scrollPosition.current + stepSize.current : stepSize.current) +
       pixelsBetweenItems -
-      (endWillBeReached ? pixelsBetweenItems / renderedFittedItemsCount : 0);
+      (endWillBeReached ? pixelsBetweenItems / fittedItemsCount : 0);
     scrollTo(listRef, scrollPosition.current);
-  }, [pixelsBetweenItems, renderedFittedItemsCount, listRef, wholeScrollWidth]);
+  }, [pixelsBetweenItems, fittedItemsCount, listRef, wholeScrollWidth]);
 
   return useMemo(
     () => ({
@@ -71,8 +72,8 @@ export const useSlideable = ({ itemsPerResolutionConfig, looped, pixelsBetweenIt
       containerRef: setContainerRef,
       scrollForward: handleScrollForward,
       scrollBack: handleScrollBack,
-      renderedFittedItemsCount,
+      fittedItemsCount,
     }),
-    [setListRef, setContainerRef, handleScrollForward, handleScrollBack, renderedFittedItemsCount],
+    [setListRef, setContainerRef, handleScrollForward, handleScrollBack, fittedItemsCount],
   );
 };

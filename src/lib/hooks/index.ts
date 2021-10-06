@@ -1,0 +1,1 @@
+export { useSlideable } from './useSlideable';

@@ -6,16 +6,10 @@ interface Props {
   containerEl: HTMLDivElement | null;
   getStepSize(): number;
   getScrollPosition(): number;
-  renderedFittedItemsCount: number;
+  fittedItemsCount: number;
 }
 
-export const useToggleButtons = ({
-  listEl,
-  containerEl,
-  getScrollPosition,
-  getStepSize,
-  renderedFittedItemsCount,
-}: Props) => {
+export const useToggleButtons = ({ listEl, containerEl, getScrollPosition, getStepSize, fittedItemsCount }: Props) => {
   useLayoutEffect(() => {
     if (!containerEl || !listEl) return;
 
@@ -23,7 +17,7 @@ export const useToggleButtons = ({
       const buttons = Array.from(containerEl.getElementsByTagName('button'));
       buttons.forEach((button, idx) => {
         const isLast = idx + 1 === buttons.length;
-        const allItemsFit = listItems(listEl).length <= renderedFittedItemsCount;
+        const allItemsFit = listItems(listEl).length <= fittedItemsCount;
         const scrollStartReached = getScrollPosition() <= 0;
         const scrollEndReached = getScrollPosition() >= listEl.scrollWidth - getStepSize();
         const shouldHide = allItemsFit || isLast ? scrollEndReached : scrollStartReached;
@@ -39,5 +33,5 @@ export const useToggleButtons = ({
       window.removeEventListener('resize', toggleButtons);
       listEl?.removeEventListener('scroll', toggleButtons);
     };
-  }, [containerEl, renderedFittedItemsCount, listEl, getScrollPosition, getStepSize]);
+  }, [containerEl, fittedItemsCount, listEl, getScrollPosition, getStepSize]);
 };

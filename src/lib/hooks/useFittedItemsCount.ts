@@ -1,12 +1,12 @@
 import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
-import { ItemsPerResolutionConfig } from './common';
+import { ItemsPerResolutionConfig } from '../types';
 
 interface Props {
   containerEl: HTMLDivElement | null;
   itemsPerResolutionConfig: ItemsPerResolutionConfig;
 }
 
-export const useItemsPerResolution = ({ containerEl, itemsPerResolutionConfig }: Props) => {
+export const useFittedItemsCount = ({ containerEl, itemsPerResolutionConfig }: Props) => {
   const resolutions = useMemo(
     () =>
       Object.keys(itemsPerResolutionConfig)
@@ -24,11 +24,11 @@ export const useItemsPerResolution = ({ containerEl, itemsPerResolutionConfig }:
     [itemsPerResolutionConfig, resolutions, containerEl],
   );
 
-  const [renderedFittedItemsCount, setRenderedFittedItemsCount] = useState<number>(itemsAvailableToFitCount());
+  const [fittedItemsCount, setFittedItemsCount] = useState<number>(itemsAvailableToFitCount());
 
   useLayoutEffect(() => {
     const updateItemsPerResolution = () => {
-      setRenderedFittedItemsCount(itemsAvailableToFitCount());
+      setFittedItemsCount(itemsAvailableToFitCount());
     };
 
     updateItemsPerResolution();
@@ -39,5 +39,5 @@ export const useItemsPerResolution = ({ containerEl, itemsPerResolutionConfig }:
     };
   }, [itemsAvailableToFitCount]);
 
-  return { renderedFittedItemsCount };
+  return { fittedItemsCount };
 };
