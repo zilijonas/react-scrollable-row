@@ -11,6 +11,14 @@
   "engines": {
     "node": ">=10"
   },
+  "keywords": [
+    "react",
+    "sliding",
+    "slider",
+    "list",
+    "scroll",
+    "loop"
+  ],
   "scripts": {
     "mb": "microbundle --jsx 'React.createElement' --jsxImportSource react --globals react/jsx-runtime=jsx --format modern,cjs",
     "build": "yarn run mb",
