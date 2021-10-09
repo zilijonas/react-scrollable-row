@@ -33,8 +33,8 @@ const Example: React.FC = () => {
     <Slideable
       looped={false} // Makes the list infinite by cloning the items of the list. Elements count must be bigger than the list is able to display with the given `itemsPerResolutionConfig`.
       placeholderElement={undefined} // JSX Element to display when `looped` is set to `false` and there are less items in the list than configuration lets list display.
-      pixelsBetweenItems={8} // Margin between list items.
-      buttonsStyle={{ background: '#000' }} // Style of the arrow buttons.
+      marginBetweenItems={8} // Margin between list items.
+      buttonsStyle={{ background: '#777' }} // Style of the arrow buttons.
       itemsPerResolutionConfig={SLIDEABLE_RES_CONFIG} // You can set how many items will list display at given resolutions.
       items={items.map(item => (
         <div key={item} style={{ width: '100%' }}>

@@ -10,25 +10,25 @@ import { ContainerElement, ScrollableElement } from '../elements';
 interface Props {
   looped: boolean;
   itemsPerResolutionConfig: ItemsPerResolutionConfig;
-  pixelsBetweenItems: number;
+  marginBetweenItems: number;
 }
 
-export const useSlideable = ({ itemsPerResolutionConfig, looped, pixelsBetweenItems }: Props) => {
+export const useSlideable = ({ itemsPerResolutionConfig, looped, marginBetweenItems }: Props) => {
   const [containerEl, setContainerEl] = useState<ContainerElement | null>(null);
   const [listEl, setListEl] = useState<ScrollableElement | null>(null);
   const { fittedItemsCount } = useFittedItemsCount({ containerEl, itemsPerResolutionConfig });
 
   useItemsLoop({ listEl, looped });
   useResetScroll({ containerEl, listEl });
-  useUpdateItemsSize({ containerEl, listEl, pixelsBetweenItems, fittedItemsCount });
+  useUpdateItemsSize({ containerEl, listEl, marginBetweenItems, fittedItemsCount });
   useToggleButtons({ containerEl, listEl, fittedItemsCount });
 
   const registerListRef = useCallback((ref: HTMLDivElement) => setListEl(new ScrollableElement(ref)), []);
   const registerContainerRef = useCallback((ref: HTMLDivElement) => setContainerEl(new ContainerElement(ref)), []);
-  const handleScrollBack = useCallback(() => listEl?.scrollBack(pixelsBetweenItems), [pixelsBetweenItems, listEl]);
+  const handleScrollBack = useCallback(() => listEl?.scrollBack(marginBetweenItems), [marginBetweenItems, listEl]);
   const handleScrollForward = useCallback(
-    () => listEl?.scrollForward(pixelsBetweenItems, fittedItemsCount),
-    [pixelsBetweenItems, fittedItemsCount, listEl],
+    () => listEl?.scrollForward(marginBetweenItems, fittedItemsCount),
+    [marginBetweenItems, fittedItemsCount, listEl],
   );
 
   return useMemo(

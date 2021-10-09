@@ -6,15 +6,15 @@ export type ItemsPerResolutionConfig = { [pixels: number]: number } & { max: num
 interface Props {
   listEl: ScrollableElement | null;
   containerEl: ContainerElement | null;
-  pixelsBetweenItems: number;
+  marginBetweenItems: number;
   fittedItemsCount: number;
 }
 
-export const useUpdateItemsSize = ({ containerEl, listEl, pixelsBetweenItems, fittedItemsCount }: Props) => {
+export const useUpdateItemsSize = ({ containerEl, listEl, marginBetweenItems, fittedItemsCount }: Props) => {
   useLayoutEffect(() => {
     if (!listEl || !containerEl) return;
 
-    const updateItemsSize = () => listEl.updateItemsSize(containerEl.width, fittedItemsCount, pixelsBetweenItems);
+    const updateItemsSize = () => listEl.updateItemsSize(containerEl.width, fittedItemsCount, marginBetweenItems);
 
     updateItemsSize();
     window.addEventListener('resize', updateItemsSize);
@@ -22,5 +22,5 @@ export const useUpdateItemsSize = ({ containerEl, listEl, pixelsBetweenItems, fi
     return () => {
       window.removeEventListener('resize', updateItemsSize);
     };
-  }, [containerEl, fittedItemsCount, listEl, pixelsBetweenItems]);
+  }, [containerEl, fittedItemsCount, listEl, marginBetweenItems]);
 };

@@ -10,16 +10,16 @@ const SlideableComponent: React.FC<SlideableProps> = ({
   looped = false,
   buttonsStyle,
   placeholderElement,
-  pixelsBetweenItems = 0,
+  marginBetweenItems = 0,
   itemsPerResolutionConfig = DEFAULT_ITEMS_PER_RESOLUTION_CONFIG,
 }) => {
   const { registerListRef, registerContainerRef, scrollBack, scrollForward, fittedItemsCount } = useSlideable({
     itemsPerResolutionConfig,
-    pixelsBetweenItems,
+    marginBetweenItems,
     looped,
   });
   const placeholdersCount = placeholderElement ? fittedItemsCount - items.length : 0;
-  const marginRight = pixelsBetweenItems + 'px';
+  const marginRight = marginBetweenItems + 'px';
 
   return (
     <div ref={registerContainerRef} className={styles['container']}>
