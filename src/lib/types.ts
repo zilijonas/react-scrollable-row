@@ -12,6 +12,14 @@ export interface SlideableProps {
    */
   items: JSX.Element[];
   /**
+   * Height of the list. Defaults to `auto`.
+   */
+  height?: number | 'auto';
+  /**
+   * Width of the list. Defaults to `100%`.
+   */
+  width?: number | '100%';
+  /**
    * You can set how many items will list display at given resolutions.
    */
   itemsPerResolutionConfig?: ItemsPerResolutionConfig;

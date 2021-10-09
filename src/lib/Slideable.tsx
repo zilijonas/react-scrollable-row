@@ -7,8 +7,10 @@ import { SlideableProps } from './types';
 
 const SlideableComponent: React.FC<SlideableProps> = ({
   items,
-  looped = false,
   buttonsStyle,
+  looped = false,
+  width = '100%',
+  height = 'auto',
   placeholderElement,
   marginBetweenItems = 0,
   itemsPerResolutionConfig = DEFAULT_ITEMS_PER_RESOLUTION_CONFIG,
@@ -22,7 +24,7 @@ const SlideableComponent: React.FC<SlideableProps> = ({
   const marginRight = marginBetweenItems + 'px';
 
   return (
-    <div ref={registerContainerRef} className={styles['container']}>
+    <div ref={registerContainerRef} className={styles['container']} style={{ height, width }}>
       <div className={styles['buttonContainer']}>
         <button onClick={scrollBack} className={styles['button']} style={buttonsStyle}>
           <ArrowIcon />

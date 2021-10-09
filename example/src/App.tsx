@@ -13,10 +13,34 @@ export const App: React.FC = () => {
   return (
     <div className="pageContainer">
       <h1>React Slideable</h1>
-      <label>List of 1 element with a placeholder</label>
-      <div className="listContainer" style={{ width }}>
+      <label>8 elements</label>
+      <div className="listContainer">
         <Slideable
           key={width}
+          width={width}
+          marginBetweenItems={8}
+          items={items.map(item => (
+            <ListItem key={item}>{item}</ListItem>
+          ))}
+        />
+      </div>
+      <label>Looped 8 elements</label>
+      <div className="listContainer">
+        <Slideable
+          looped
+          key={width}
+          width={width}
+          marginBetweenItems={8}
+          items={items.map(item => (
+            <ListItem key={item}>{item}</ListItem>
+          ))}
+        />
+      </div>
+      <label>1 element with a placeholder</label>
+      <div className="listContainer">
+        <Slideable
+          key={width}
+          width={width}
           placeholderElement={<PlaceholderItem />}
           marginBetweenItems={8}
           items={items.slice(0, 1).map(item => (
@@ -24,28 +48,17 @@ export const App: React.FC = () => {
           ))}
         />
       </div>
-      <label>List of 8 elements</label>
-      <div className="listContainer" style={{ width }}>
-        <Slideable
-          key={width}
-          marginBetweenItems={8}
-          items={items.map(item => (
-            <ListItem key={item}>{item}</ListItem>
-          ))}
-        />
-      </div>
-      <label>Looped list of 8 elements</label>
-      <div className="listContainer" style={{ width }}>
-        <Slideable
-          key={width}
-          looped
-          marginBetweenItems={8}
-          items={items.map(item => (
-            <ListItem key={item}>{item}</ListItem>
-          ))}
-        />
-      </div>
       <WidthControl width={width} onWidthChanged={setWidth} />
+      <label>8 elements, full page width scroll</label>
+      <div className="listContainer" style={{ width: '100%' }}>
+        <Slideable
+          key={width}
+          marginBetweenItems={8}
+          items={items.map(item => (
+            <ListItem key={item}>{item}</ListItem>
+          ))}
+        />
+      </div>
     </div>
   );
 };
