@@ -1,6 +1,6 @@
 # react-slideable
 
-> Netflix like slideable component for data/image lists.
+> Component for displaying data/image lists with dynamic items' width. Has an ability to create looped list.
 
 [![NPM](https://img.shields.io/npm/v/react-slideable.svg)](https://www.npmjs.com/package/react-slideable) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
