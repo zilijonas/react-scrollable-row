@@ -6,6 +6,8 @@
 
 ## Demo
 
+![@zilijonas/react-slideable horizontal](https://github.com/zilijonas/react-slideable/blob/master/slideable-demo.gif?raw=true)
+
 [Demo](https://zilijonas.github.io/react-slideable/)
 
 ## Install

@@ -17,7 +17,8 @@
     "slider",
     "list",
     "scroll",
-    "loop"
+    "loop",
+    "slideable"
   ],
   "scripts": {
     "mb": "microbundle --jsx 'React.createElement' --jsxImportSource react --globals react/jsx-runtime=jsx --format modern,cjs",
