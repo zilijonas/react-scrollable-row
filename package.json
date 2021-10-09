@@ -1,7 +1,7 @@
 {
   "name": "react-slideable",
   "version": "1.0.17",
-  "description": "Netflix like slideable component for data/image lists.",
+  "description": "Component for displaying data/image lists with dynamic items' width. Has ability to create looped list.",
   "author": "zilijonas",
   "license": "MIT",
   "repository": "zilijonas/react-slideable",
