@@ -1,34 +1,21 @@
 import { useLayoutEffect } from 'react';
-
-type HTMLListElement = HTMLUListElement & { current: string };
+import { ScrollableElement } from '../elements';
 
 interface Props {
-  listEl: HTMLDivElement | null;
+  listEl: ScrollableElement | null;
   looped: boolean;
-  getStepSize(): number;
 }
 
-export const useItemsLoop = ({ listEl, looped, getStepSize }: Props) => {
+export const useItemsLoop = ({ listEl, looped }: Props) => {
   useLayoutEffect(() => {
     if (!listEl) return;
 
-    function createElementsForLoop(this: HTMLDivElement) {
-      const maxScroll = this.scrollWidth - this.clientWidth;
-      const currentScroll = this.scrollLeft;
-      if (currentScroll + getStepSize() >= maxScroll && listEl) {
-        const list = listEl.getElementsByTagName('ul')[0] as HTMLListElement;
-        const current = parseInt(list.dataset.current!, 10);
-        const item = listEl.getElementsByTagName('li')[current];
-        const newItem = item.cloneNode(true);
-        list.appendChild(newItem);
-        list.dataset.current = (current + 1).toString();
-      }
-    }
+    const createElementsForLoop = () => listEl.cloneElements();
 
-    looped && listEl?.addEventListener('scroll', createElementsForLoop);
+    looped && listEl.addScrollListener(createElementsForLoop);
 
     return () => {
-      looped && listEl?.removeEventListener('scroll', createElementsForLoop);
+      listEl.clearScrollListener(createElementsForLoop);
     };
-  }, [listEl, looped, getStepSize]);
+  }, [listEl, looped]);
 };

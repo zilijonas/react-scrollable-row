@@ -1,28 +1,22 @@
 import { useLayoutEffect } from 'react';
-import { scrollTo } from './common';
+import { ContainerElement, ScrollableElement } from '../elements';
 
 interface Props {
-  listEl: HTMLDivElement | null;
-  containerEl: HTMLDivElement | null;
-  updateScrollPosition(value: number): void;
-  updateStepSize(value: number): void;
+  listEl: ScrollableElement | null;
+  containerEl: ContainerElement | null;
 }
 
-export const useResetScroll = ({ listEl, containerEl, updateStepSize, updateScrollPosition }: Props) => {
+export const useResetScroll = ({ listEl, containerEl }: Props) => {
   useLayoutEffect(() => {
     if (!listEl || !containerEl) return;
-    updateStepSize(containerEl.clientWidth ?? 0);
 
-    const resetScroll = () => {
-      updateScrollPosition(0);
-      updateStepSize(containerEl.clientWidth ?? 0);
-      scrollTo(listEl, 0);
-    };
+    const updateStepSize = () => listEl.updateStepSize(containerEl.width);
 
-    window.addEventListener('resize', resetScroll);
+    updateStepSize();
+    window.addEventListener('resize', updateStepSize);
 
     return () => {
-      window.removeEventListener('resize', resetScroll);
+      window.removeEventListener('resize', updateStepSize);
     };
-  }, [containerEl, listEl, updateScrollPosition, updateStepSize]);
+  }, [containerEl, listEl]);
 };

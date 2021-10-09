@@ -1,11 +1,11 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useToggleButtons } from './useToggleButtons';
 import { useItemsLoop } from './useItemsLoop';
 import { useFittedItemsCount } from './useFittedItemsCount';
 import { useResetScroll } from './useResetScroll';
 import { useUpdateItemsSize } from './useUpdateItemsSize';
 import { ItemsPerResolutionConfig } from '../types';
-import { scrollTo } from './common';
+import { ContainerElement, ScrollableElement } from '../elements';
 
 interface Props {
   looped: boolean;
@@ -14,66 +14,31 @@ interface Props {
 }
 
 export const useSlideable = ({ itemsPerResolutionConfig, looped, pixelsBetweenItems }: Props) => {
-  const [containerRef, setContainerRef] = useState<HTMLDivElement | null>(null);
-  const [listRef, setListRef] = useState<HTMLDivElement | null>(null);
-  const scrollPosition = useRef<number>(0);
-  const stepSize = useRef<number>(0);
+  const [containerEl, setContainerEl] = useState<ContainerElement | null>(null);
+  const [listEl, setListEl] = useState<ScrollableElement | null>(null);
+  const { fittedItemsCount } = useFittedItemsCount({ containerEl, itemsPerResolutionConfig });
 
-  const wholeScrollWidth = useCallback(() => listRef?.scrollWidth ?? 0, [listRef]);
-  const getStepSize = useCallback(() => stepSize.current, []);
-  const getScrollPosition = useCallback(() => scrollPosition.current, []);
-  const updateStepSize = useCallback((value: number) => (stepSize.current = value), []);
-  const updateScrollPosition = useCallback((value: number) => (scrollPosition.current = value), []);
+  useItemsLoop({ listEl, looped });
+  useResetScroll({ containerEl, listEl });
+  useUpdateItemsSize({ containerEl, listEl, pixelsBetweenItems, fittedItemsCount });
+  useToggleButtons({ containerEl, listEl, fittedItemsCount });
 
-  const { fittedItemsCount } = useFittedItemsCount({
-    containerEl: containerRef,
-    itemsPerResolutionConfig,
-  });
-
-  useUpdateItemsSize({
-    containerEl: containerRef,
-    listEl: listRef,
-    pixelsBetweenItems,
-    fittedItemsCount,
-  });
-  useToggleButtons({
-    containerEl: containerRef,
-    listEl: listRef,
-    fittedItemsCount,
-    getStepSize,
-    getScrollPosition,
-  });
-  useItemsLoop({ listEl: listRef, looped, getStepSize });
-  useResetScroll({ containerEl: containerRef, listEl: listRef, updateStepSize, updateScrollPosition });
-
-  const handleScrollBack = useCallback(() => {
-    if (scrollPosition.current < 0) return;
-    const scrollEndReached = scrollPosition.current + stepSize.current >= wholeScrollWidth();
-    const newScrollPos =
-      (scrollEndReached ? wholeScrollWidth() - stepSize.current * 2 : scrollPosition.current - stepSize.current) -
-      pixelsBetweenItems;
-    scrollPosition.current = newScrollPos > 0 ? newScrollPos : 0;
-    scrollTo(listRef, scrollPosition.current);
-  }, [pixelsBetweenItems, listRef, wholeScrollWidth]);
-
-  const handleScrollForward = useCallback(() => {
-    if (scrollPosition.current > wholeScrollWidth()) return;
-    const endWillBeReached = scrollPosition.current + stepSize.current >= wholeScrollWidth();
-    scrollPosition.current =
-      (scrollPosition.current > 0 ? scrollPosition.current + stepSize.current : stepSize.current) +
-      pixelsBetweenItems -
-      (endWillBeReached ? pixelsBetweenItems / fittedItemsCount : 0);
-    scrollTo(listRef, scrollPosition.current);
-  }, [pixelsBetweenItems, fittedItemsCount, listRef, wholeScrollWidth]);
+  const registerListRef = useCallback((ref: HTMLDivElement) => setListEl(new ScrollableElement(ref)), []);
+  const registerContainerRef = useCallback((ref: HTMLDivElement) => setContainerEl(new ContainerElement(ref)), []);
+  const handleScrollBack = useCallback(() => listEl?.scrollBack(pixelsBetweenItems), [pixelsBetweenItems, listEl]);
+  const handleScrollForward = useCallback(
+    () => listEl?.scrollForward(pixelsBetweenItems, fittedItemsCount),
+    [pixelsBetweenItems, fittedItemsCount, listEl],
+  );
 
   return useMemo(
     () => ({
-      listRef: setListRef,
-      containerRef: setContainerRef,
-      scrollForward: handleScrollForward,
-      scrollBack: handleScrollBack,
+      registerListRef,
+      registerContainerRef,
       fittedItemsCount,
+      scrollBack: handleScrollBack,
+      scrollForward: handleScrollForward,
     }),
-    [setListRef, setContainerRef, handleScrollForward, handleScrollBack, fittedItemsCount],
+    [registerListRef, registerContainerRef, handleScrollForward, handleScrollBack, fittedItemsCount],
   );
 };

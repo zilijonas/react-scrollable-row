@@ -13,7 +13,7 @@ const SlideableComponent: React.FC<SlideableProps> = ({
   pixelsBetweenItems = 0,
   itemsPerResolutionConfig = DEFAULT_ITEMS_PER_RESOLUTION_CONFIG,
 }) => {
-  const { listRef, containerRef, scrollBack, scrollForward, fittedItemsCount } = useSlideable({
+  const { registerListRef, registerContainerRef, scrollBack, scrollForward, fittedItemsCount } = useSlideable({
     itemsPerResolutionConfig,
     pixelsBetweenItems,
     looped,
@@ -22,13 +22,13 @@ const SlideableComponent: React.FC<SlideableProps> = ({
   const marginRight = pixelsBetweenItems + 'px';
 
   return (
-    <div ref={containerRef} className={styles['container']}>
+    <div ref={registerContainerRef} className={styles['container']}>
       <div className={styles['buttonContainer']}>
         <button onClick={scrollBack} className={styles['button']} style={buttonsStyle}>
           <ArrowIcon />
         </button>
       </div>
-      <div ref={listRef} className={styles['scrollableContent']}>
+      <div ref={registerListRef} className={styles['scrollableContent']}>
         <ul data-current="0" className={styles['list']}>
           {items.map((c, idx) => (
             <li key={idx} className={styles['listItem']} style={{ marginRight }}>

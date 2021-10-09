@@ -1,8 +1,9 @@
 import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
+import { ContainerElement } from '../elements';
 import { ItemsPerResolutionConfig } from '../types';
 
 interface Props {
-  containerEl: HTMLDivElement | null;
+  containerEl: ContainerElement | null;
   itemsPerResolutionConfig: ItemsPerResolutionConfig;
 }
 
@@ -17,10 +18,7 @@ export const useFittedItemsCount = ({ containerEl, itemsPerResolutionConfig }: P
   );
 
   const itemsAvailableToFitCount = useCallback(
-    () =>
-      containerEl?.clientWidth
-        ? itemsPerResolutionConfig[resolutions.find(r => containerEl.clientWidth <= r) ?? 'max']
-        : 0,
+    () => (containerEl?.width ? itemsPerResolutionConfig[resolutions.find(r => containerEl.width <= r) ?? 'max'] : 0),
     [itemsPerResolutionConfig, resolutions, containerEl],
   );
 

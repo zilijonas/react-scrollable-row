@@ -1,37 +1,30 @@
 import { useLayoutEffect } from 'react';
-import { listItems } from './common';
+import { ContainerElement, ScrollableElement } from '../elements';
 
 interface Props {
-  listEl: HTMLDivElement | null;
-  containerEl: HTMLDivElement | null;
-  getStepSize(): number;
-  getScrollPosition(): number;
+  listEl: ScrollableElement | null;
+  containerEl: ContainerElement | null;
   fittedItemsCount: number;
 }
 
-export const useToggleButtons = ({ listEl, containerEl, getScrollPosition, getStepSize, fittedItemsCount }: Props) => {
+export const useToggleButtons = ({ listEl, containerEl, fittedItemsCount }: Props) => {
   useLayoutEffect(() => {
     if (!containerEl || !listEl) return;
 
     const toggleButtons = () => {
-      const buttons = Array.from(containerEl.getElementsByTagName('button'));
-      buttons.forEach((button, idx) => {
-        const isLast = idx + 1 === buttons.length;
-        const allItemsFit = listItems(listEl).length <= fittedItemsCount;
-        const scrollStartReached = getScrollPosition() <= 0;
-        const scrollEndReached = getScrollPosition() >= listEl.scrollWidth - getStepSize();
-        const shouldHide = allItemsFit || isLast ? scrollEndReached : scrollStartReached;
-        button.style.display = shouldHide ? 'none' : 'block';
-      });
+      const allItemsFit = listEl.items.length <= fittedItemsCount;
+      const scrollStartReached = listEl.scrollPosition <= 0;
+      const scrollEndReached = listEl.scrollPosition >= listEl.scrollWidth - listEl.stepSize;
+      containerEl.toggleButtons(allItemsFit, scrollStartReached, scrollEndReached);
     };
 
     toggleButtons();
     window.addEventListener('resize', toggleButtons);
-    listEl?.addEventListener('scroll', toggleButtons);
+    listEl.addScrollListener(toggleButtons);
 
     return () => {
       window.removeEventListener('resize', toggleButtons);
-      listEl?.removeEventListener('scroll', toggleButtons);
+      listEl.clearScrollListener(toggleButtons);
     };
-  }, [containerEl, fittedItemsCount, listEl, getScrollPosition, getStepSize]);
+  }, [containerEl, fittedItemsCount, listEl]);
 };
