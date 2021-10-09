@@ -1,7 +1,7 @@
 import { useLayoutEffect } from 'react';
 import { ContainerElement, ScrollableElement } from '../elements';
 
-export type ItemsPerResolutionConfig = { [pixels: number]: number } & { max: number };
+export type ItemsPerScrollWidthConfig = { [pixels: number]: number } & { max: number };
 
 interface Props {
   listEl: ScrollableElement | null;

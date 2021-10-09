@@ -1,6 +1,6 @@
-import { ItemsPerResolutionConfig } from './types';
+import { ItemsPerScrollWidthConfig } from './types';
 
-export const DEFAULT_ITEMS_PER_RESOLUTION_CONFIG: ItemsPerResolutionConfig = {
+export const DEFAULT_ITEMS_PER_RESOLUTION_CONFIG: ItemsPerScrollWidthConfig = {
   480: 2,
   768: 3,
   1200: 4,

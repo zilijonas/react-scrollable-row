@@ -1,25 +1,25 @@
 import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { ContainerElement } from '../elements';
-import { ItemsPerResolutionConfig } from '../types';
+import { ItemsPerScrollWidthConfig } from '../types';
 
 interface Props {
   containerEl: ContainerElement | null;
-  itemsPerResolutionConfig: ItemsPerResolutionConfig;
+  itemsPerScrollWidth: ItemsPerScrollWidthConfig;
 }
 
-export const useFittedItemsCount = ({ containerEl, itemsPerResolutionConfig }: Props) => {
+export const useFittedItemsCount = ({ containerEl, itemsPerScrollWidth }: Props) => {
   const resolutions = useMemo(
     () =>
-      Object.keys(itemsPerResolutionConfig)
+      Object.keys(itemsPerScrollWidth)
         .filter(Number)
         .map(Number)
         .sort((a, b) => a - b),
-    [itemsPerResolutionConfig],
+    [itemsPerScrollWidth],
   );
 
   const itemsAvailableToFitCount = useCallback(
-    () => (containerEl?.width ? itemsPerResolutionConfig[resolutions.find(r => containerEl.width <= r) ?? 'max'] : 0),
-    [itemsPerResolutionConfig, resolutions, containerEl],
+    () => (containerEl?.width ? itemsPerScrollWidth[resolutions.find(r => containerEl.width <= r) ?? 'max'] : 0),
+    [itemsPerScrollWidth, resolutions, containerEl],
   );
 
   const [fittedItemsCount, setFittedItemsCount] = useState<number>(itemsAvailableToFitCount());

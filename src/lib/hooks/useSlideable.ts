@@ -4,22 +4,22 @@ import { useItemsLoop } from './useItemsLoop';
 import { useFittedItemsCount } from './useFittedItemsCount';
 import { useResetScroll } from './useResetScroll';
 import { useUpdateItemsSize } from './useUpdateItemsSize';
-import { ItemsPerResolutionConfig } from '../types';
+import { ItemsPerScrollWidthConfig } from '../types';
 import { ContainerElement, ScrollableElement } from '../elements';
 
 interface Props {
   looped: boolean;
-  itemsPerResolutionConfig: ItemsPerResolutionConfig;
+  itemsPerScrollWidth: ItemsPerScrollWidthConfig;
   marginBetweenItems: number;
 }
 
-export const useSlideable = ({ itemsPerResolutionConfig, looped, marginBetweenItems }: Props) => {
+export const useSlideable = ({ itemsPerScrollWidth, looped, marginBetweenItems }: Props) => {
   const [containerEl, setContainerEl] = useState<ContainerElement | null>(null);
   const [listEl, setListEl] = useState<ScrollableElement | null>(null);
-  const { fittedItemsCount } = useFittedItemsCount({ containerEl, itemsPerResolutionConfig });
+  const { fittedItemsCount } = useFittedItemsCount({ containerEl, itemsPerScrollWidth });
 
-  useItemsLoop({ listEl, looped });
   useResetScroll({ containerEl, listEl });
+  useItemsLoop({ listEl, looped, fittedItemsCount });
   useUpdateItemsSize({ containerEl, listEl, marginBetweenItems, fittedItemsCount });
   useToggleButtons({ containerEl, listEl, fittedItemsCount });
 

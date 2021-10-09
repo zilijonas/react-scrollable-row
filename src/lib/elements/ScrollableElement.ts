@@ -39,10 +39,11 @@ export class ScrollableElement {
     });
   }
 
-  cloneElements() {
+  cloneElements(fittedItemsCount: number) {
     const list = this.innerList;
     const maxScroll = this.scrollWidth - this.width;
-    if (this.scrollPosition + this.stepSize < maxScroll || !list) return;
+    const allItemsFit = this.items.length <= fittedItemsCount;
+    if (!list || (this.scrollPosition + this.stepSize < maxScroll && !allItemsFit)) return;
     const current = parseInt(list?.dataset.current!, 10);
     list.appendChild(this.items[current].cloneNode(true));
     list.dataset.current = (current + 1).toString();

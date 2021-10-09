@@ -4,6 +4,7 @@
   margin: 0;
   flex-grow: 0;
   flex-basis: 100%;
+  background: transparent;
   box-sizing: border-box;
 }
 
@@ -71,6 +72,7 @@
   display: flex;
   align-self: center;
   justify-content: center;
+  background: transparent;
   overflow-x: auto;
   scrollbar-width: none;
   pointer-events: none;

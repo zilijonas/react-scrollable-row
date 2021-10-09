@@ -13,10 +13,10 @@ const SlideableComponent: React.FC<SlideableProps> = ({
   height = 'auto',
   placeholderElement,
   marginBetweenItems = 0,
-  itemsPerResolutionConfig = DEFAULT_ITEMS_PER_RESOLUTION_CONFIG,
+  itemsPerScrollWidth = DEFAULT_ITEMS_PER_RESOLUTION_CONFIG,
 }) => {
   const { registerListRef, registerContainerRef, scrollBack, scrollForward, fittedItemsCount } = useSlideable({
-    itemsPerResolutionConfig,
+    itemsPerScrollWidth,
     marginBetweenItems,
     looped,
   });
