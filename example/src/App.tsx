@@ -13,6 +13,17 @@ export const App: React.FC = () => {
   return (
     <div className="pageContainer">
       <h1>React Slideable</h1>
+      <label>List of 1 element with a placeholder</label>
+      <div className="listContainer" style={{ width }}>
+        <Slideable
+          key={width}
+          placeholderElement={<PlaceholderItem />}
+          pixelsBetweenItems={8}
+          items={items.slice(0, 1).map(item => (
+            <ListItem key={item}>{item}</ListItem>
+          ))}
+        />
+      </div>
       <label>List of 8 elements</label>
       <div className="listContainer" style={{ width }}>
         <Slideable
@@ -30,17 +41,6 @@ export const App: React.FC = () => {
           looped
           pixelsBetweenItems={8}
           items={items.map(item => (
-            <ListItem key={item}>{item}</ListItem>
-          ))}
-        />
-      </div>
-      <label>Finite list of 1 elements with a placeholder</label>
-      <div className="listContainer" style={{ width }}>
-        <Slideable
-          key={width}
-          placeholderElement={<PlaceholderItem />}
-          pixelsBetweenItems={8}
-          items={items.slice(0, 1).map(item => (
             <ListItem key={item}>{item}</ListItem>
           ))}
         />

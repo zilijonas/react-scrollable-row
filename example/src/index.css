@@ -67,6 +67,7 @@ code {
   height: 50px;
   font-size: 1.6rem;
   border-radius: 6px;
+  color: #000;
   border-color: #f77a;
   background: transparent;
   cursor: pointer;
@@ -106,6 +107,7 @@ input[type='number'] {
   }
 
   .widthControlButtons > button {
+    flex: 0 0 40%;
     margin-right: 0em;
   }
 }
