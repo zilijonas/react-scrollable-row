@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Slideable } from 'react-slideable';
+import { Slideable, SlideableProps } from 'react-slideable';
 import 'react-slideable/dist/index.css';
 import { ListItem } from './ui/ListItem';
 import { PlaceholderItem } from './ui/PlaceholderItem';
@@ -8,7 +8,7 @@ import { WidthControl } from './ui/WidthControl';
 const items = [1, 2, 3, 4, 5, 6, 7, 8];
 
 export const App: React.FC = () => {
-  const [width, setWidth] = useState(500);
+  const [width, setWidth] = useState<SlideableProps['width']>(500);
 
   return (
     <div className="pageContainer">
@@ -49,16 +49,6 @@ export const App: React.FC = () => {
         />
       </div>
       <WidthControl width={width} onWidthChanged={setWidth} />
-      <label>8 elements, full page width scroll</label>
-      <div className="listContainer" style={{ width: '100%' }}>
-        <Slideable
-          key={width}
-          marginBetweenItems={8}
-          items={items.map(item => (
-            <ListItem key={item}>{item}</ListItem>
-          ))}
-        />
-      </div>
     </div>
   );
 };

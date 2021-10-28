@@ -24,7 +24,7 @@ const SlideableComponent: React.FC<SlideableProps> = ({
   const marginRight = marginBetweenItems + 'px';
 
   return (
-    <div ref={registerContainerRef} className={styles['container']} style={{ height, width }}>
+    <div ref={registerContainerRef} className={styles['container']} style={{ height, width, maxWidth: width }}>
       <div className={styles['buttonContainer']}>
         <button onClick={scrollBack} className={styles['button']} style={buttonsStyle}>
           <ArrowIcon />

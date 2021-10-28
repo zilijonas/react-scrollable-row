@@ -1,21 +1,22 @@
 import React from 'react';
+import { SlideableProps } from '../../../dist';
 
 interface Props {
-  width: number;
-  onWidthChanged(width: number): void;
+  width: SlideableProps['width'];
+  onWidthChanged(width: SlideableProps['width']): void;
 }
 
-const EXAMPLE_WIDTHS = [300, 600, 1200, 1500];
+const EXAMPLE_WIDTHS: SlideableProps['width'][] = [300, 600, 1200, 1500, '100%'];
 
 export const WidthControl: React.FC<Props> = ({ width, onWidthChanged }) => {
   return (
     <div className="widthControl">
       <label>List's width in pixels</label>
-      <input type="number" value={width} onChange={handleWidthChange} />
+      <input type="number" value={width === '100%' ? window.innerWidth : width} onChange={handleWidthChange} />
       <div className="widthControlButtons">
         {EXAMPLE_WIDTHS.map(w => (
           <button key={w} onClick={handlePredefinedWidthClick(w)}>
-            {w}px
+            {w === '100%' ? 'Full width' : `${w}px`}
           </button>
         ))}
       </div>
@@ -26,7 +27,7 @@ export const WidthControl: React.FC<Props> = ({ width, onWidthChanged }) => {
     onWidthChanged(+value);
   }
 
-  function handlePredefinedWidthClick(predefinedWidth: number) {
+  function handlePredefinedWidthClick(predefinedWidth: SlideableProps['width']) {
     return () => onWidthChanged(predefinedWidth);
   }
 };
