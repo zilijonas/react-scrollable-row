@@ -29,11 +29,15 @@ const SlideableComponent: React.FC<SlideableProps> = ({
     <div ref={registerContainerRef} className={styles['container']} style={{ height, width, maxWidth: width }}>
       <div className={styles['buttonContainer']}>
         {customButtonLeft ? (
-          <span onClick={scrollBack} className="navButton">
+          <span onClick={scrollBack} className={`navButton ${styles['emptyButton']}`}>
             {customButtonLeft}
           </span>
         ) : (
-          <button onClick={scrollBack} className={'navButton ' + styles['button']} style={buttonsStyle}>
+          <button
+            onClick={scrollBack}
+            className={`navButton ${styles['emptyButton']} ${styles['button']}`}
+            style={buttonsStyle}
+          >
             <ArrowIcon />
           </button>
         )}
@@ -55,11 +59,15 @@ const SlideableComponent: React.FC<SlideableProps> = ({
       </div>
       <div className={styles['buttonContainer']}>
         {customButtonRight ? (
-          <span onClick={scrollForward} className="navButton">
+          <span onClick={scrollForward} className={`navButton ${styles['emptyButton']}`}>
             {customButtonRight}
           </span>
         ) : (
-          <button onClick={scrollForward} className={'navButton ' + styles['button']} style={buttonsStyle}>
+          <button
+            onClick={scrollForward}
+            className={`navButton ${styles['emptyButton']} ${styles['button']}`}
+            style={buttonsStyle}
+          >
             <ArrowIcon />
           </button>
         )}
