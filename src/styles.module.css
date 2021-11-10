@@ -40,6 +40,12 @@
   padding-right: 0;
 }
 
+.navButton {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
 .buttonContainer {
   position: absolute;
   z-index: 2;

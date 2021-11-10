@@ -1,6 +1,6 @@
 {
   "name": "react-slideable",
-  "version": "1.0.3",
+  "version": "1.0.31",
   "description": "A component for displaying data/image lists with dynamic items' width. Has an ability to create looped list.",
   "author": "zilijonas",
   "license": "MIT",
