@@ -1,8 +1,8 @@
 import React from 'react';
-import styles from '../styles.module.css';
-import { useSlideable } from './hooks';
 import { ArrowIcon } from '../assets/ArrowIcon';
+import styles from '../styles.module.css';
 import { DEFAULT_ITEMS_PER_RESOLUTION_CONFIG } from './constants';
+import { useSlideable } from './hooks';
 import { SlideableProps } from './types';
 
 const SlideableComponent: React.FC<SlideableProps> = ({
@@ -11,6 +11,8 @@ const SlideableComponent: React.FC<SlideableProps> = ({
   looped = false,
   width = '100%',
   height = 'auto',
+  customButtonLeft,
+  customButtonRight,
   placeholderElement,
   marginBetweenItems = 0,
   itemsPerScrollWidth = DEFAULT_ITEMS_PER_RESOLUTION_CONFIG,
@@ -26,9 +28,15 @@ const SlideableComponent: React.FC<SlideableProps> = ({
   return (
     <div ref={registerContainerRef} className={styles['container']} style={{ height, width, maxWidth: width }}>
       <div className={styles['buttonContainer']}>
-        <button onClick={scrollBack} className={styles['button']} style={buttonsStyle}>
-          <ArrowIcon />
-        </button>
+        {customButtonLeft ? (
+          <span onClick={scrollBack} className="navButton">
+            {customButtonLeft}
+          </span>
+        ) : (
+          <button onClick={scrollBack} className={'navButton ' + styles['button']} style={buttonsStyle}>
+            <ArrowIcon />
+          </button>
+        )}
       </div>
       <div ref={registerListRef} className={styles['scrollableContent']}>
         <ul data-current="0" className={styles['list']}>
@@ -46,9 +54,15 @@ const SlideableComponent: React.FC<SlideableProps> = ({
         </ul>
       </div>
       <div className={styles['buttonContainer']}>
-        <button onClick={scrollForward} className={styles['button']} style={buttonsStyle}>
-          <ArrowIcon />
-        </button>
+        {customButtonRight ? (
+          <span onClick={scrollForward} className="navButton">
+            {customButtonRight}
+          </span>
+        ) : (
+          <button onClick={scrollForward} className={'navButton ' + styles['button']} style={buttonsStyle}>
+            <ArrowIcon />
+          </button>
+        )}
       </div>
     </div>
   );

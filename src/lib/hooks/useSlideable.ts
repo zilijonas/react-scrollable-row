@@ -1,11 +1,11 @@
 import { useCallback, useMemo, useState } from 'react';
-import { useToggleButtons } from './useToggleButtons';
-import { useItemsLoop } from './useItemsLoop';
-import { useFittedItemsCount } from './useFittedItemsCount';
-import { useResetScroll } from './useResetScroll';
-import { useUpdateItemsSize } from './useUpdateItemsSize';
-import { ItemsPerScrollWidthConfig } from '../types';
 import { ContainerElement, ScrollableElement } from '../elements';
+import { ItemsPerScrollWidthConfig } from '../types';
+import { useFittedItemsCount } from './useFittedItemsCount';
+import { useItemsLoop } from './useItemsLoop';
+import { useResetScroll } from './useResetScroll';
+import { useToggleButtons } from './useToggleButtons';
+import { useUpdateItemsSize } from './useUpdateItemsSize';
 
 interface Props {
   looped: boolean;

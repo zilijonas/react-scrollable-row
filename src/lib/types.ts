@@ -40,4 +40,12 @@ export interface SlideableProps {
    * Style of the arrow buttons.
    */
   buttonsStyle?: React.CSSProperties;
+  /**
+   * Custom button for scroll to left.
+   */
+  customButtonLeft?: JSX.Element;
+  /**
+   * Custom button for scroll to right.
+   */
+  customButtonRight?: JSX.Element;
 }

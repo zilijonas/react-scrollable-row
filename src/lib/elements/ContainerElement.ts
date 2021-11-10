@@ -10,8 +10,8 @@ export class ContainerElement {
   }
 
   toggleButtons(allItemsFit: boolean, scrollStartReached: boolean, scrollEndReached: boolean) {
-    const buttons = Array.from(this._element?.getElementsByTagName('button') ?? []);
-    buttons.forEach((button, idx) => {
+    const buttons = Array.from(this._element?.getElementsByClassName('navButton') ?? []);
+    buttons.forEach((button: HTMLButtonElement | HTMLSpanElement, idx) => {
       const isLast = idx + 1 === buttons.length;
       const shouldHide = allItemsFit || isLast ? scrollEndReached : scrollStartReached;
       button.style.display = shouldHide ? 'none' : 'block';
