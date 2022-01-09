@@ -8,7 +8,9 @@ import { SlideableProps } from './types';
 const SlideableComponent: React.FC<SlideableProps> = ({
   items,
   buttonsStyle,
+  noButtons = false,
   looped = false,
+  swipeable = false,
   width = '100%',
   height = 'auto',
   customButtonLeft,
@@ -21,6 +23,8 @@ const SlideableComponent: React.FC<SlideableProps> = ({
     itemsPerScrollWidth,
     marginBetweenItems,
     looped,
+    swipeable,
+    noButtons,
   });
   const placeholdersCount = placeholderElement ? fittedItemsCount - items.length : 0;
   const marginRight = marginBetweenItems + 'px';

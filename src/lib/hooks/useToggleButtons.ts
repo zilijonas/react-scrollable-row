@@ -2,12 +2,13 @@ import { useLayoutEffect } from 'react';
 import { ContainerElement, ScrollableElement } from '../elements';
 
 interface Props {
+  noButtons: boolean;
   listEl: ScrollableElement | null;
   containerEl: ContainerElement | null;
   fittedItemsCount: number;
 }
 
-export const useToggleButtons = ({ listEl, containerEl, fittedItemsCount }: Props) => {
+export const useToggleButtons = ({ listEl, containerEl, fittedItemsCount, noButtons }: Props) => {
   useLayoutEffect(() => {
     if (!containerEl || !listEl) return;
 
@@ -18,13 +19,17 @@ export const useToggleButtons = ({ listEl, containerEl, fittedItemsCount }: Prop
       containerEl.toggleButtons(allItemsFit, scrollStartReached, scrollEndReached);
     };
 
-    toggleButtons();
-    window.addEventListener('resize', toggleButtons);
-    listEl.addScrollListener(toggleButtons);
+    noButtons && containerEl.hideButtons();
+
+    if (!noButtons) {
+      toggleButtons();
+      window.addEventListener('resize', toggleButtons);
+      listEl.addScrollListener(toggleButtons);
+    }
 
     return () => {
       window.removeEventListener('resize', toggleButtons);
       listEl.clearScrollListener(toggleButtons);
     };
-  }, [containerEl, fittedItemsCount, listEl]);
+  }, [noButtons, containerEl, fittedItemsCount, listEl]);
 };

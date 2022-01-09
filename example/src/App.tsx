@@ -24,10 +24,11 @@ export const App: React.FC = () => {
           ))}
         />
       </div>
-      <label>Looped 8 elements</label>
+      <label>Swipeable looped 8 elements</label>
       <div className="listContainer">
         <Slideable
           looped
+          swipeable
           key={width}
           width={width}
           marginBetweenItems={8}

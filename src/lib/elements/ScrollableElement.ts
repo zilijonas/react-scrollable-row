@@ -1,4 +1,5 @@
 type Listener = <K extends keyof HTMLElementEventMap>(this: HTMLDivElement, ev?: HTMLElementEventMap[K]) => void;
+type SwipeListener = (event: MouseEvent | TouchEvent) => void;
 
 type HTMLListElement = HTMLUListElement & { current: string };
 
@@ -78,6 +79,26 @@ export class ScrollableElement {
 
   clearScrollListener(listener: Listener) {
     this._element?.removeEventListener('scroll', listener);
+  }
+
+  addSwipeStartListener(listener: SwipeListener) {
+    this._element?.addEventListener('mousedown', listener, true);
+    this._element?.addEventListener('touchstart', listener, true);
+  }
+
+  clearSwipeStartListener(listener: SwipeListener) {
+    this._element?.removeEventListener('mousedown', listener);
+    this._element?.removeEventListener('touchstart', listener);
+  }
+
+  addSwipeEndListener(listener: SwipeListener) {
+    this._element?.addEventListener('mouseup', listener, true);
+    this._element?.addEventListener('touchend', listener, true);
+  }
+
+  clearSwipeEndListener(listener: SwipeListener) {
+    this._element?.removeEventListener('mouseup', listener);
+    this._element?.removeEventListener('touchend', listener);
   }
 
   private _scrollHorizontal(left: number) {

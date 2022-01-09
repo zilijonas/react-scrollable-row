@@ -15,7 +15,7 @@
   align-self: center;
   justify-content: center;
   background: transparent;
-  overflow-x: auto;
+  overflow-x: hidden;
   scrollbar-width: none;
   pointer-events: none;
 }

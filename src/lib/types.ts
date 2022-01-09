@@ -32,6 +32,14 @@ export interface SlideableProps {
    */
   looped?: boolean;
   /**
+   * Enables scroll by swipe.
+   */
+  swipeable?: boolean;
+  /**
+   * Removes scroll buttons.
+   */
+  noButtons?: boolean;
+  /**
    * JSX Element to display when `looped` is set to `false`
    * and there are less items in the list than in the configuration for the current scroll width.
    */

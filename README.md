@@ -44,6 +44,10 @@ const Example = () => {
       width={500}
       // Makes the list infinite by cloning the items of the list. Optional. Defaults to `false`.
       looped={true}
+      // Enables scroll by swipe. Defaults to `false`.
+      swipeable={true}
+      // Removes scroll buttons. Defaults to `false`.
+      noButtons={true}
       // Margin between list items. Optional. Defaults to `0`.
       marginBetweenItems={8}
       // You can set how many items will list display at given resolutions. Optional. Defaults to the `CONFIG` values above.

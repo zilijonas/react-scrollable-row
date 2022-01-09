@@ -17,4 +17,11 @@ export class ContainerElement {
       button.style.display = shouldHide ? 'none' : 'block';
     });
   }
+
+  hideButtons() {
+    const buttons = Array.from(this._element?.getElementsByClassName('navButton') ?? []);
+    buttons.forEach((button: HTMLButtonElement | HTMLSpanElement) => {
+      button.style.display = 'none';
+    });
+  }
 }
