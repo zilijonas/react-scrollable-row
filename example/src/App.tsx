@@ -18,7 +18,7 @@ export const App: React.FC = () => {
         <Slideable
           key={width}
           width={width}
-          marginBetweenItems={8}
+          itemsMargin={8}
           items={items.map(item => (
             <ListItem key={item}>{item}</ListItem>
           ))}
@@ -31,7 +31,7 @@ export const App: React.FC = () => {
           swipeable
           key={width}
           width={width}
-          marginBetweenItems={8}
+          itemsMargin={8}
           items={items.map(item => (
             <ListItem key={item}>{item}</ListItem>
           ))}
@@ -43,7 +43,7 @@ export const App: React.FC = () => {
           key={width}
           width={width}
           placeholderElement={<PlaceholderItem />}
-          marginBetweenItems={8}
+          itemsMargin={8}
           items={items.slice(0, 1).map(item => (
             <ListItem key={item}>{item}</ListItem>
           ))}

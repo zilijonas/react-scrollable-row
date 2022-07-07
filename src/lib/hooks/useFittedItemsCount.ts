@@ -1,41 +1,34 @@
-import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ContainerElement } from '../elements';
 import { ItemsPerScrollWidthConfig } from '../types';
+import { useListener } from './useListener';
 
 interface Props {
-  containerEl: ContainerElement | null;
-  itemsPerScrollWidth: ItemsPerScrollWidthConfig;
+  el: ContainerElement | null;
+  config: ItemsPerScrollWidthConfig;
 }
 
-export const useFittedItemsCount = ({ containerEl, itemsPerScrollWidth }: Props) => {
+export const useFitCount = ({ el, config }: Props) => {
   const resolutions = useMemo(
     () =>
-      Object.keys(itemsPerScrollWidth)
+      Object.keys(config)
         .filter(Number)
         .map(Number)
         .sort((a, b) => a - b),
-    [itemsPerScrollWidth],
+    [config],
   );
+  const [fitCount, setFitCount] = useState<number>(itemsAvailableToFitCount(resolutions, config, el));
+  useListener('resize', () => setFitCount(itemsAvailableToFitCount(resolutions, config, el)), [
+    resolutions,
+    config,
+    el,
+  ]);
 
-  const itemsAvailableToFitCount = useCallback(
-    () => (containerEl?.width ? itemsPerScrollWidth[resolutions.find(r => containerEl.width <= r) ?? 'max'] : 0),
-    [itemsPerScrollWidth, resolutions, containerEl],
-  );
-
-  const [fittedItemsCount, setFittedItemsCount] = useState<number>(itemsAvailableToFitCount());
-
-  useLayoutEffect(() => {
-    const updateItemsPerResolution = () => {
-      setFittedItemsCount(itemsAvailableToFitCount());
-    };
-
-    updateItemsPerResolution();
-    window.addEventListener('resize', updateItemsPerResolution);
-
-    return () => {
-      window.removeEventListener('resize', updateItemsPerResolution);
-    };
-  }, [itemsAvailableToFitCount]);
-
-  return { fittedItemsCount };
+  return { fitCount };
 };
+
+const itemsAvailableToFitCount = (
+  resolutions: number[],
+  config: ItemsPerScrollWidthConfig,
+  el: ContainerElement | null,
+) => (el?.width ? config[resolutions.find(r => el.width <= r) ?? 'max'] : 0);

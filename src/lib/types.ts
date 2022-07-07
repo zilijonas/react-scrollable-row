@@ -22,11 +22,11 @@ export interface SlideableProps {
   /**
    * You can set how many items will list display at given resolutions.
    */
-  itemsPerScrollWidth?: ItemsPerScrollWidthConfig;
+  config?: ItemsPerScrollWidthConfig;
   /**
    * Margin between list items, px.
    */
-  marginBetweenItems?: number;
+  itemsMargin?: number;
   /**
    * Makes the list infinite by cloning the items of the list.
    */

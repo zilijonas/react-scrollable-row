@@ -37,6 +37,7 @@
     "react": "^17.0.2"
   },
   "dependencies": {
+    "caniuse-lite": "^1.0.30001363",
     "smoothscroll-polyfill": "^0.4.4"
   },
   "devDependencies": {

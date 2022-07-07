@@ -1,49 +1,46 @@
-type Listener = <K extends keyof HTMLElementEventMap>(this: HTMLDivElement, ev?: HTMLElementEventMap[K]) => void;
-type SwipeListener = (event: MouseEvent | TouchEvent) => void;
-
 type HTMLListElement = HTMLUListElement & { current: string };
 
 export class ScrollableElement {
   public stepSize: number = 0;
   public scrollPosition: number = 0;
-  private _element: HTMLListElement | null;
+  public element: HTMLListElement | null;
 
-  constructor(element: HTMLDivElement | null) {
-    this._element = element as typeof this._element;
+  constructor(el: HTMLDivElement | null) {
+    this.element = el as typeof this.element;
   }
 
   get items() {
-    return Array.from(this._element?.getElementsByTagName('li') ?? []);
+    return Array.from(this.element?.getElementsByTagName('li') ?? []);
   }
 
   get current() {
-    return this._element?.current;
+    return this.element?.current;
   }
 
   get innerList(): HTMLListElement | null {
-    return this._element?.getElementsByTagName('ul')[0] as HTMLListElement;
+    return this.element?.getElementsByTagName('ul')[0] as HTMLListElement;
   }
 
   get width() {
-    return this._element?.clientWidth ?? 0;
+    return this.element?.clientWidth ?? 0;
   }
 
   get scrollWidth() {
-    return this._element?.scrollWidth ?? 0;
+    return this.element?.scrollWidth ?? 0;
   }
 
-  updateItemsSize(containerWidth: number, fittedItemsCount: number, itemsMargin: number) {
-    const spaceWidth = containerWidth / fittedItemsCount;
-    const width = spaceWidth - itemsMargin + itemsMargin / fittedItemsCount;
+  updateItemsSize(containerWidth: number, fitCount: number, itemsMargin: number) {
+    const spaceWidth = containerWidth / fitCount;
+    const width = spaceWidth - itemsMargin + itemsMargin / fitCount;
     this.items.forEach(item => {
       (item as any).style = `${item.style.cssText ?? ''}; width: ${width}px; min-width: ${width}px;`;
     });
   }
 
-  cloneElements(fittedItemsCount: number) {
+  cloneElements(fitCount: number) {
     const list = this.innerList;
     const maxScroll = this.scrollWidth - this.width;
-    const allItemsFit = this.items.length <= fittedItemsCount;
+    const allItemsFit = this.items.length <= fitCount;
     if (!list || (this.scrollPosition + this.stepSize < maxScroll && !allItemsFit)) return;
     const current = parseInt(list?.dataset.current!, 10);
     list.appendChild(this.items[current].cloneNode(true));
@@ -51,20 +48,20 @@ export class ScrollableElement {
   }
 
   scrollBack(itemsMargin: number) {
-    if (!this._element || this.scrollPosition < 0) return;
+    if (!this.element || this.scrollPosition < 0) return;
     const scrollEndReached = this.scrollPosition + this.stepSize >= this.scrollWidth;
     const newScrollPos =
       (scrollEndReached ? this.scrollWidth - this.stepSize * 2 : this.scrollPosition - this.stepSize) - itemsMargin;
     this._scrollHorizontal(newScrollPos > 0 ? newScrollPos : 0);
   }
 
-  scrollForward(itemsMargin: number, fittedItemsCount: number) {
-    if (!this._element || this.scrollPosition > this.scrollWidth) return;
+  scrollForward(itemsMargin: number, fitCount: number) {
+    if (!this.element || this.scrollPosition > this.scrollWidth) return;
     const endWillBeReached = this.scrollPosition + this.stepSize >= this.scrollWidth;
     this._scrollHorizontal(
       (this.scrollPosition > 0 ? this.scrollPosition + this.stepSize : this.stepSize) +
         itemsMargin -
-        (endWillBeReached ? itemsMargin / fittedItemsCount : 0),
+        (endWillBeReached ? itemsMargin / fitCount : 0),
     );
   }
 
@@ -73,36 +70,8 @@ export class ScrollableElement {
     this._scrollHorizontal(0);
   }
 
-  addScrollListener(listener: Listener) {
-    this._element?.addEventListener('scroll', listener);
-  }
-
-  clearScrollListener(listener: Listener) {
-    this._element?.removeEventListener('scroll', listener);
-  }
-
-  addSwipeStartListener(listener: SwipeListener) {
-    this._element?.addEventListener('mousedown', listener, true);
-    this._element?.addEventListener('touchstart', listener, true);
-  }
-
-  clearSwipeStartListener(listener: SwipeListener) {
-    this._element?.removeEventListener('mousedown', listener);
-    this._element?.removeEventListener('touchstart', listener);
-  }
-
-  addSwipeEndListener(listener: SwipeListener) {
-    this._element?.addEventListener('mouseup', listener, true);
-    this._element?.addEventListener('touchend', listener, true);
-  }
-
-  clearSwipeEndListener(listener: SwipeListener) {
-    this._element?.removeEventListener('mouseup', listener);
-    this._element?.removeEventListener('touchend', listener);
-  }
-
   private _scrollHorizontal(left: number) {
     this.scrollPosition = left;
-    this._element?.scrollTo({ left, behavior: 'smooth' });
+    this.element?.scrollTo({ left, behavior: 'smooth' });
   }
 }

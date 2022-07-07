@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { ContainerElement, ScrollableElement } from '../elements';
 import { ItemsPerScrollWidthConfig } from '../types';
-import { useFittedItemsCount } from './useFittedItemsCount';
+import { useFitCount } from './useFittedItemsCount';
 import { useItemsLoop } from './useItemsLoop';
 import { useResetScroll } from './useResetScroll';
 import { useSwipeScroll } from './useSwipeScroll';
@@ -12,37 +12,34 @@ interface Props {
   swipeable: boolean;
   looped: boolean;
   noButtons: boolean;
-  itemsPerScrollWidth: ItemsPerScrollWidthConfig;
-  marginBetweenItems: number;
+  config: ItemsPerScrollWidthConfig;
+  itemsMargin: number;
 }
 
-export const useSlideable = ({ itemsPerScrollWidth, looped, marginBetweenItems, swipeable, noButtons }: Props) => {
+export const useSlideable = ({ config, looped, itemsMargin: margin, swipeable, noButtons }: Props) => {
   const [containerEl, setContainerEl] = useState<ContainerElement | null>(null);
   const [listEl, setListEl] = useState<ScrollableElement | null>(null);
-  const { fittedItemsCount } = useFittedItemsCount({ containerEl, itemsPerScrollWidth });
+  const { fitCount } = useFitCount({ el: containerEl, config });
 
   useResetScroll({ containerEl, listEl });
-  useItemsLoop({ listEl, looped, fittedItemsCount });
-  useUpdateItemsSize({ containerEl, listEl, marginBetweenItems, fittedItemsCount });
-  useToggleButtons({ containerEl, listEl, fittedItemsCount, noButtons });
-  useSwipeScroll({ listEl, marginBetweenItems, fittedItemsCount, swipeable });
+  useItemsLoop({ listEl, looped, fitCount });
+  useUpdateItemsSize({ containerEl, listEl, margin, fitCount });
+  useToggleButtons({ containerEl, listEl, fitCount, noButtons });
+  useSwipeScroll({ listEl, margin, fitCount, swipeable });
 
   const registerListRef = useCallback((ref: HTMLDivElement) => setListEl(new ScrollableElement(ref)), []);
   const registerContainerRef = useCallback((ref: HTMLDivElement) => setContainerEl(new ContainerElement(ref)), []);
-  const handleScrollBack = useCallback(() => listEl?.scrollBack(marginBetweenItems), [marginBetweenItems, listEl]);
-  const handleScrollForward = useCallback(
-    () => listEl?.scrollForward(marginBetweenItems, fittedItemsCount),
-    [marginBetweenItems, fittedItemsCount, listEl],
-  );
+  const handleScrollBack = useCallback(() => listEl?.scrollBack(margin), [margin, listEl]);
+  const handleScrollForward = useCallback(() => listEl?.scrollForward(margin, fitCount), [margin, fitCount, listEl]);
 
   return useMemo(
     () => ({
+      fittedItemsCount: fitCount,
       registerListRef,
       registerContainerRef,
-      fittedItemsCount,
       scrollBack: handleScrollBack,
       scrollForward: handleScrollForward,
     }),
-    [registerListRef, registerContainerRef, handleScrollForward, handleScrollBack, fittedItemsCount],
+    [registerListRef, registerContainerRef, handleScrollForward, handleScrollBack, fitCount],
   );
 };

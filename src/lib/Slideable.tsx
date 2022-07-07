@@ -16,29 +16,27 @@ const SlideableComponent: React.FC<SlideableProps> = ({
   customButtonLeft,
   customButtonRight,
   placeholderElement,
-  marginBetweenItems = 0,
-  itemsPerScrollWidth = DEFAULT_ITEMS_PER_RESOLUTION_CONFIG,
+  itemsMargin = 0,
+  config = DEFAULT_ITEMS_PER_RESOLUTION_CONFIG,
 }) => {
-  const { registerListRef, registerContainerRef, scrollBack, scrollForward, fittedItemsCount } = useSlideable({
-    itemsPerScrollWidth,
-    marginBetweenItems,
-    looped,
-    swipeable,
-    noButtons,
-  });
-  const placeholdersCount = placeholderElement ? fittedItemsCount - items.length : 0;
-  const marginRight = marginBetweenItems + 'px';
+  const slideable = useSlideable({ itemsMargin, config, looped, swipeable, noButtons });
+  const placeholdersCount = placeholderElement ? slideable.fittedItemsCount - items.length : 0;
+  const marginRight = itemsMargin + 'px';
 
   return (
-    <div ref={registerContainerRef} className={styles['container']} style={{ height, width, maxWidth: width }}>
+    <div
+      ref={slideable.registerContainerRef}
+      className={styles['container']}
+      style={{ height, width, maxWidth: width }}
+    >
       <div className={styles['buttonContainer']}>
         {customButtonLeft ? (
-          <span onClick={scrollBack} className={`navButton ${styles['emptyButton']}`}>
+          <span onClick={slideable.scrollBack} className={`navButton ${styles['emptyButton']}`}>
             {customButtonLeft}
           </span>
         ) : (
           <button
-            onClick={scrollBack}
+            onClick={slideable.scrollBack}
             className={`navButton ${styles['emptyButton']} ${styles['button']}`}
             style={buttonsStyle}
           >
@@ -46,7 +44,7 @@ const SlideableComponent: React.FC<SlideableProps> = ({
           </button>
         )}
       </div>
-      <div ref={registerListRef} className={styles['scrollableContent']}>
+      <div ref={slideable.registerListRef} className={styles['scrollableContent']}>
         <ul data-current="0" className={styles['list']}>
           {items.map((c, idx) => (
             <li key={idx} className={styles['listItem']} style={{ marginRight }}>
@@ -63,12 +61,12 @@ const SlideableComponent: React.FC<SlideableProps> = ({
       </div>
       <div className={styles['buttonContainer']}>
         {customButtonRight ? (
-          <span onClick={scrollForward} className={`navButton ${styles['emptyButton']}`}>
+          <span onClick={slideable.scrollForward} className={`navButton ${styles['emptyButton']}`}>
             {customButtonRight}
           </span>
         ) : (
           <button
-            onClick={scrollForward}
+            onClick={slideable.scrollForward}
             className={`navButton ${styles['emptyButton']} ${styles['button']}`}
             style={buttonsStyle}
           >

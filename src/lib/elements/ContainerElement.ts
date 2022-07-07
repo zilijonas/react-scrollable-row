@@ -9,7 +9,7 @@ export class ContainerElement {
     return this._element?.clientWidth ?? 0;
   }
 
-  toggleButtons(allItemsFit: boolean, scrollStartReached: boolean, scrollEndReached: boolean) {
+  showButtons(allItemsFit: boolean, scrollStartReached: boolean, scrollEndReached: boolean) {
     const buttons = Array.from(this._element?.getElementsByClassName('navButton') ?? []);
     buttons.forEach((button: HTMLButtonElement | HTMLSpanElement, idx) => {
       const isLast = idx + 1 === buttons.length;

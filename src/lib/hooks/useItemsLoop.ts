@@ -1,23 +1,10 @@
-import { useLayoutEffect } from 'react';
 import { ScrollableElement } from '../elements';
+import { useListener } from './useListener';
 
 interface Props {
   listEl: ScrollableElement | null;
-  fittedItemsCount: number;
+  fitCount: number;
   looped: boolean;
 }
-
-export const useItemsLoop = ({ listEl, fittedItemsCount, looped }: Props) => {
-  useLayoutEffect(() => {
-    if (!listEl) return;
-
-    const createElementsForLoop = () => listEl.cloneElements(fittedItemsCount);
-
-    looped && createElementsForLoop();
-    looped && listEl.addScrollListener(createElementsForLoop);
-
-    return () => {
-      listEl.clearScrollListener(createElementsForLoop);
-    };
-  }, [listEl, looped, fittedItemsCount]);
-};
+export const useItemsLoop = ({ listEl, fitCount, looped }: Props) =>
+  useListener('scroll', looped && listEl && (() => listEl?.cloneElements(fitCount)), [listEl, looped, fitCount]);

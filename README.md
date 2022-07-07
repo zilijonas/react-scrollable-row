@@ -49,9 +49,9 @@ const Example = () => {
       // Removes scroll buttons. Defaults to `false`.
       noButtons={true}
       // Margin between list items. Optional. Defaults to `0`.
-      marginBetweenItems={8}
+      itemsMargin={8}
       // You can set how many items will list display at given resolutions. Optional. Defaults to the `CONFIG` values above.
-      itemsPerScrollWidth={CONFIG}
+      config={CONFIG}
       // Style of the arrow buttons. Optional.
       buttonsStyle={{ background: '#777' }}
       // JSX Element to display when `looped` is set to `false` and there are less items in the list than in the configuration for the current scroll width.
