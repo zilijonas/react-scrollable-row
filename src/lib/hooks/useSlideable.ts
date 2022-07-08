@@ -1,45 +1,47 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { ContainerElement, ScrollableElement } from '../elements';
 import { ItemsPerScrollWidthConfig } from '../types';
-import { useFitCount } from './useFittedItemsCount';
-import { useItemsLoop } from './useItemsLoop';
-import { useResetScroll } from './useResetScroll';
-import { useSwipeScroll } from './useSwipeScroll';
-import { useToggleButtons } from './useToggleButtons';
-import { useUpdateItemsSize } from './useUpdateItemsSize';
+import { useButtons } from './useButtons';
+import { useFitCount } from './useFitCount';
+import { useListener } from './useListener';
+import { useSwipe } from './useSwipe';
 
 interface Props {
-  swipeable: boolean;
   looped: boolean;
+  swipeable: boolean;
   noButtons: boolean;
-  config: ItemsPerScrollWidthConfig;
   itemsMargin: number;
+  list: ScrollableElement | null;
+  container: ContainerElement | null;
+  config: ItemsPerScrollWidthConfig;
 }
 
-export const useSlideable = ({ config, looped, itemsMargin: margin, swipeable, noButtons }: Props) => {
-  const [containerEl, setContainerEl] = useState<ContainerElement | null>(null);
-  const [listEl, setListEl] = useState<ScrollableElement | null>(null);
-  const { fitCount } = useFitCount({ el: containerEl, config });
+export const useSlideable = ({ list, container, config, looped, itemsMargin: margin, swipeable, noButtons }: Props) => {
+  const { fitCount } = useFitCount({ container, config });
 
-  useResetScroll({ containerEl, listEl });
-  useItemsLoop({ listEl, looped, fitCount });
-  useUpdateItemsSize({ containerEl, listEl, margin, fitCount });
-  useToggleButtons({ containerEl, listEl, fitCount, noButtons });
-  useSwipeScroll({ listEl, margin, fitCount, swipeable });
+  useListener('resize', list && container && (() => list.updateStepSize(container.width)), [container, list]);
+  useListener(
+    'scroll',
+    looped && list && (() => list.cloneElements(fitCount)),
+    [list, looped, fitCount],
+    list?.element,
+  );
+  useListener('resize', list && container && (() => list.updateItemsSize(container.width, fitCount, margin)), [
+    container,
+    fitCount,
+    list,
+    margin,
+  ]);
 
-  const registerListRef = useCallback((ref: HTMLDivElement) => setListEl(new ScrollableElement(ref)), []);
-  const registerContainerRef = useCallback((ref: HTMLDivElement) => setContainerEl(new ContainerElement(ref)), []);
-  const handleScrollBack = useCallback(() => listEl?.scrollBack(margin), [margin, listEl]);
-  const handleScrollForward = useCallback(() => listEl?.scrollForward(margin, fitCount), [margin, fitCount, listEl]);
+  useButtons({ container, list, fitCount, noButtons });
+  useSwipe({ list, margin, fitCount, swipeable });
 
   return useMemo(
     () => ({
       fittedItemsCount: fitCount,
-      registerListRef,
-      registerContainerRef,
-      scrollBack: handleScrollBack,
-      scrollForward: handleScrollForward,
+      scrollBack: () => list?.scrollBack(margin),
+      scrollForward: () => list?.scrollForward(margin, fitCount),
     }),
-    [registerListRef, registerContainerRef, handleScrollForward, handleScrollBack, fitCount],
+    [fitCount, list, margin],
   );
 };

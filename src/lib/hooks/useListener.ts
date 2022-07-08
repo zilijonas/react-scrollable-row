@@ -4,17 +4,21 @@ export const useListener = <K extends keyof WindowEventMap, L extends HTMLElemen
   type: K | K[],
   fn: Function | boolean | null,
   deps?: React.DependencyList,
-  el?: L | null,
+  element?: L | null,
 ) =>
   useLayoutEffect(() => {
     if (!fn || typeof fn !== 'function') return;
-    fn();
+    try {
+      fn();
+    } catch {
+      /**/
+    }
     typeof type === 'string'
-      ? (el || window).addEventListener(type, fn as VoidFunction, false)
-      : type.forEach(t => (el || window).addEventListener(t, fn as VoidFunction, false));
+      ? (element || window).addEventListener(type, fn as VoidFunction, false)
+      : type.forEach(t => (element || window).addEventListener(t, fn as VoidFunction, false));
     return () =>
       typeof type === 'string'
-        ? (el || window).removeEventListener(type, fn as VoidFunction, false)
-        : type.forEach(t => (el || window).removeEventListener(t, fn as VoidFunction, false));
+        ? (element || window).removeEventListener(type, fn as VoidFunction, false)
+        : type.forEach(t => (element || window).removeEventListener(t, fn as VoidFunction, false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type, ...(deps || [])]);
