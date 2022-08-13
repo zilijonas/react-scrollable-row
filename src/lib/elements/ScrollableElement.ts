@@ -4,9 +4,15 @@ export class ScrollableElement {
   public stepSize: number = 0;
   public scrollPosition: number = 0;
   public element: HTMLListElement | null;
+  private readonly _itemsMargin: number;
+  private readonly _count: number;
+  private _ogItems: readonly HTMLLIElement[];
 
-  constructor(el: HTMLDivElement | null) {
+  constructor(el: HTMLDivElement | null, itemsMargin: number) {
     this.element = el as typeof this.element;
+    this._itemsMargin = itemsMargin;
+    this._ogItems = Object.freeze(this.items.map(item => item.cloneNode(true) as HTMLLIElement));
+    this._count = this._ogItems.length;
   }
 
   get items() {
@@ -26,12 +32,17 @@ export class ScrollableElement {
   }
 
   get scrollWidth() {
-    return this.element?.scrollWidth ?? 0;
+    return this.innerList?.scrollWidth ?? 0;
   }
 
-  updateItemsSize(containerWidth: number, fitCount: number, itemsMargin: number) {
+  updateStepSize(stepSize: number) {
+    this.stepSize = stepSize;
+    this._scrollHorizontal(0);
+  }
+
+  updateItemsSize(containerWidth: number, fitCount: number) {
     const spaceWidth = containerWidth / fitCount;
-    const width = spaceWidth - itemsMargin + itemsMargin / fitCount;
+    const width = spaceWidth - this._itemsMargin + this._itemsMargin / fitCount;
     this.items.forEach(item => {
       (item as any).style = `${item.style.cssText ?? ''}; width: ${width}px; min-width: ${width}px;`;
     });
@@ -41,37 +52,63 @@ export class ScrollableElement {
     const list = this.innerList;
     const maxScroll = this.scrollWidth - this.width;
     const allItemsFit = this.items.length <= fitCount;
-    if (!list || (this.scrollPosition + this.stepSize < maxScroll && !allItemsFit)) return;
-    const current = parseInt(list?.dataset.current!, 10);
-    list.appendChild(this.items[current].cloneNode(true));
-    list.dataset.current = (current + 1).toString();
+    const haventReachedEnd = this.scrollPosition + this.stepSize < maxScroll;
+    // console.log('tried?');
+
+    if (!list || !fitCount || (haventReachedEnd && !allItemsFit)) return;
+    const prevCurrent = parseInt(list?.dataset.current!, 10);
+    for (let i = 0; i < fitCount; i++) {
+      const current = (prevCurrent + i) % this._count;
+      // console.log(this._ogItems[current].innerText);
+      list.appendChild(this._ogItems[current].cloneNode(true));
+      list.dataset.current = ((current + 1) % this._count).toString();
+    }
+    if (list.children.length > fitCount * 2 && this.scrollPosition) {
+      for (let i = 0; i < fitCount; i++) {
+        list.firstChild?.remove();
+      }
+      list.style.setProperty('transition', 'none');
+      this.scrollBack();
+      setTimeout(() => list.style.removeProperty('transition'), 0);
+      // list.style.removeProperty('transition');
+      // list.classList.remove('notransition');
+    }
+    console.log(this.innerList?.children.length);
+
+    // this._scrollHorizontal(this.scrollPosition - this.stepSize - this._itemsMargin * 3);
+
+    // const prevCurrent = parseInt(list?.dataset.current!, 10);
+    // const current = prevCurrent >= this._count ? 0 : prevCurrent;
+    // list.appendChild(this._ogItems[current].cloneNode(true));
+    // if (current > fitCount && this.items.length > this._count) {
+    // this._scrollHorizontal(this.scrollPosition - this.stepSize, 'smooth');
+    // for (let i = 0; i < fitCount; i++) this.items[i].remove();
+    // }
+    // console.log(this.items[0].innerText, this.items.length);
+    // list.dataset.current = (current + 1).toString();
   }
 
-  scrollBack(itemsMargin: number) {
+  scrollBack() {
     if (!this.element || this.scrollPosition < 0) return;
     const scrollEndReached = this.scrollPosition + this.stepSize >= this.scrollWidth;
     const newScrollPos =
-      (scrollEndReached ? this.scrollWidth - this.stepSize * 2 : this.scrollPosition - this.stepSize) - itemsMargin;
+      (scrollEndReached ? this.scrollPosition - this.stepSize : this.scrollPosition - this.stepSize) -
+      this._itemsMargin;
     this._scrollHorizontal(newScrollPos > 0 ? newScrollPos : 0);
   }
 
-  scrollForward(itemsMargin: number, fitCount: number) {
+  scrollForward(fitCount: number) {
     if (!this.element || this.scrollPosition > this.scrollWidth) return;
     const endWillBeReached = this.scrollPosition + this.stepSize >= this.scrollWidth;
     this._scrollHorizontal(
       (this.scrollPosition > 0 ? this.scrollPosition + this.stepSize : this.stepSize) +
-        itemsMargin -
-        (endWillBeReached ? itemsMargin / fitCount : 0),
+        this._itemsMargin -
+        (endWillBeReached ? this._itemsMargin / fitCount : 0),
     );
-  }
-
-  updateStepSize(stepSize: number) {
-    this.stepSize = stepSize;
-    this._scrollHorizontal(0);
   }
 
   private _scrollHorizontal(left: number) {
     this.scrollPosition = left;
-    this.element?.scrollTo({ left, behavior: 'smooth' });
+    this.innerList?.style.setProperty('transform', `translateX(${-left}px)`);
   }
 }

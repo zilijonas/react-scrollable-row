@@ -10,38 +10,43 @@ interface Props {
   looped: boolean;
   swipeable: boolean;
   noButtons: boolean;
-  itemsMargin: number;
   list: ScrollableElement | null;
   container: ContainerElement | null;
   config: ItemsPerScrollWidthConfig;
 }
 
-export const useSlideable = ({ list, container, config, looped, itemsMargin: margin, swipeable, noButtons }: Props) => {
+export const useSlideable = ({ list, container, config, looped, swipeable, noButtons }: Props) => {
   const { fitCount } = useFitCount({ container, config });
 
   useListener('resize', list && container && (() => list.updateStepSize(container.width)), [container, list]);
   useListener(
-    'scroll',
-    looped && list && (() => list.cloneElements(fitCount)),
-    [list, looped, fitCount],
-    list?.element,
+    'transitionend',
+    looped &&
+      !!fitCount &&
+      container &&
+      list &&
+      (() => {
+        list.cloneElements(fitCount);
+        list.updateItemsSize(container.width, fitCount);
+      }),
+    [container, list, looped, fitCount],
+    list?.innerList,
   );
-  useListener('resize', list && container && (() => list.updateItemsSize(container.width, fitCount, margin)), [
+  useListener('resize', list && container && (() => list.updateItemsSize(container.width, fitCount)), [
     container,
     fitCount,
     list,
-    margin,
   ]);
 
   useButtons({ container, list, fitCount, noButtons });
-  useSwipe({ list, margin, fitCount, swipeable });
+  useSwipe({ list, fitCount, swipeable });
 
   return useMemo(
     () => ({
       fittedItemsCount: fitCount,
-      scrollBack: () => list?.scrollBack(margin),
-      scrollForward: () => list?.scrollForward(margin, fitCount),
+      scrollBack: () => list?.scrollBack(),
+      scrollForward: () => list?.scrollForward(fitCount),
     }),
-    [fitCount, list, margin],
+    [fitCount, list],
   );
 };

@@ -6,12 +6,11 @@ export type ItemsPerScrollWidthConfig = { [pixels: number]: number } & { max: nu
 
 interface Props {
   list: ScrollableElement | null;
-  margin: number;
   fitCount: number;
   swipeable: boolean;
 }
 
-export const useSwipe = ({ list, margin, fitCount, swipeable }: Props) => {
+export const useSwipe = ({ list, fitCount, swipeable }: Props) => {
   const screenX = useRef<number>();
   useListener(
     ['mousedown', 'touchstart'],
@@ -19,7 +18,7 @@ export const useSwipe = ({ list, margin, fitCount, swipeable }: Props) => {
       swipeable &&
       ((event: MouseEvent | TouchEvent) =>
         (screenX.current = event instanceof MouseEvent ? event.screenX : event.touches[0]?.clientX)),
-    [swipeable, fitCount, list, margin],
+    [swipeable, fitCount, list],
     list?.element,
   );
   useListener(
@@ -31,11 +30,11 @@ export const useSwipe = ({ list, margin, fitCount, swipeable }: Props) => {
         if (screenX.current === null || screenX.current === undefined || lastScreenX === undefined) return;
 
         const difference = screenX.current - lastScreenX;
-        difference > 0 && list.scrollForward(margin, fitCount);
-        difference < 0 && list.scrollBack(margin);
+        difference > 0 && list.scrollForward(fitCount);
+        difference < 0 && list.scrollBack();
         screenX.current = undefined;
       }),
-    [swipeable, fitCount, list, margin],
+    [swipeable, fitCount, list],
     list?.element,
   );
 };

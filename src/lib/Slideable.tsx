@@ -22,8 +22,13 @@ const SlideableComponent: React.FC<SlideableProps> = ({
 }) => {
   const [list, setList] = useState<ScrollableElement | null>(null);
   const [container, setContainer] = useState<ContainerElement | null>(null);
-  const slideable = useSlideable({ list, container, itemsMargin, config, looped, swipeable, noButtons });
+  const slideable = useSlideable({ list, container, config, looped, swipeable, noButtons });
   const placeholdersCount = placeholderElement ? slideable.fittedItemsCount - items.length : 0;
+
+  const createList = useCallback(
+    (ref: HTMLDivElement) => setList(new ScrollableElement(ref, itemsMargin)),
+    [itemsMargin],
+  );
 
   return (
     <div
@@ -48,19 +53,16 @@ const SlideableComponent: React.FC<SlideableProps> = ({
           </button>
         )}
       </div>
-      <div
-        ref={useCallback((ref: HTMLDivElement) => setList(new ScrollableElement(ref)), [])}
-        className={styles['scrollableContent']}
-      >
+      <div ref={createList} className={styles['scrollableContent']}>
         <ul data-current="0" className={styles['list']}>
-          {items.map((c, idx) => (
+          {items.map((item, idx) => (
             <li key={idx} className={styles['listItem']} style={{ marginRight: `${itemsMargin}px` }}>
-              {c}
+              {item}
             </li>
           ))}
           {placeholdersCount > 0 &&
-            Array.from(Array(placeholdersCount).keys()).map(k => (
-              <li key={k} className={styles['listItem']} style={{ marginRight: `${itemsMargin}px` }}>
+            Array.from(Array(placeholdersCount).keys()).map(key => (
+              <li key={key} className={styles['listItem']} style={{ marginRight: `${itemsMargin}px` }}>
                 {placeholderElement}
               </li>
             ))}

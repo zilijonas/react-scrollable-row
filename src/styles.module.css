@@ -16,6 +16,7 @@
   justify-content: center;
   background: transparent;
   overflow-x: hidden;
+  overflow-y: hidden;
   scrollbar-width: none;
   pointer-events: none;
 }
@@ -33,6 +34,7 @@
   width: 100%;
   list-style-type: none;
   pointer-events: fill;
+  transition: transform 600ms ease-in-out;
 }
 
 .listItem {
@@ -102,4 +104,12 @@
   width: 2.2em;
   height: 2.2em;
   padding-right: 6px;
+}
+
+.notransition {
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -o-transition: none !important;
+  -ms-transition: none !important;
+  transition: none !important;
 }
