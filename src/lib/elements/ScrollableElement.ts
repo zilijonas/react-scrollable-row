@@ -5,14 +5,14 @@ export class ScrollableElement {
   public scrollPosition: number = 0;
   public element: HTMLListElement | null;
   private readonly _itemsMargin: number;
-  private readonly _count: number;
-  private _ogItems: readonly HTMLLIElement[];
+  // private readonly _count: number;
+  // private _ogItems: readonly HTMLLIElement[];
 
   constructor(el: HTMLDivElement | null, itemsMargin: number) {
     this.element = el as typeof this.element;
     this._itemsMargin = itemsMargin;
-    this._ogItems = Object.freeze(this.items.map(item => item.cloneNode(true) as HTMLLIElement));
-    this._count = this._ogItems.length;
+    // this._ogItems = Object.freeze(this.items.map(item => item.cloneNode(true) as HTMLLIElement));
+    // this._count = this._ogItems.length;
   }
 
   get items() {
@@ -50,16 +50,24 @@ export class ScrollableElement {
 
   cloneElements(fitCount: number) {
     const list = this.innerList;
-    const endReached = this.scrollPosition + this.stepSize * 2 > this.scrollWidth;
-    if (!list || !fitCount || (!endReached && list.children.length > fitCount)) return;
-    const prevCurrent = parseInt(list?.dataset.current!, 10);
-    for (let i = 0; i < fitCount; i++) {
-      const current = (prevCurrent + i) % this._count;
-      list.appendChild(this._ogItems[current].cloneNode(true));
-      list.dataset.current = ((current + 1) % this._count).toString();
-    }
-    if (list.children.length > fitCount * 2 && this.scrollPosition) {
+
+    if (!list || !fitCount) return;
+
+    const startReached = this.scrollPosition - this.stepSize < 0;
+    if (startReached) {
       for (let i = 0; i < fitCount; i++) {
+        list.lastChild && list.prepend(list.lastChild.cloneNode(true));
+        list.lastChild?.remove();
+      }
+      list.style.setProperty('transition', 'none');
+      this.scrollForward(fitCount);
+      setTimeout(() => list.style.removeProperty('transition'), 0);
+    }
+
+    const endReached = this.scrollPosition + this.stepSize > this.scrollWidth;
+    if (endReached) {
+      for (let i = 0; i < fitCount; i++) {
+        list.firstChild && list.append(list.firstChild.cloneNode(true));
         list.firstChild?.remove();
       }
       list.style.setProperty('transition', 'none');
