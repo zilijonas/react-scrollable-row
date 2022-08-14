@@ -4,28 +4,27 @@ import { useListener } from './useListener';
 
 interface Props {
   noButtons: boolean;
+  looped: boolean;
   list: ScrollableElement | null;
   container: ContainerElement | null;
   fitCount: number;
 }
 
-export const useButtons = ({ list, container, fitCount, noButtons }: Props) => {
-  const toggleButtons =
-    container &&
-    list &&
-    (() =>
-      container.toggleButtons(
-        list.items.length <= fitCount,
-        list.scrollPosition <= 0,
-        list.scrollPosition >= list.scrollWidth - list.stepSize,
-      ));
+export const useButtons = ({ list, looped, container, fitCount, noButtons }: Props) => {
   useListener(
     ['transitionstart', 'transitionend'],
-    !noButtons && toggleButtons,
-    [noButtons, container, fitCount, list],
+    !noButtons &&
+      container &&
+      list &&
+      (() =>
+        container.toggleButtons(
+          list.items.length <= fitCount,
+          !looped && list.scrollPosition <= 0,
+          !looped && list.scrollPosition >= list.scrollWidth - list.stepSize,
+        )),
+    [noButtons, container, fitCount, list, looped],
     list?.innerList,
   );
-  useListener(['scroll', 'resize'], !noButtons && toggleButtons, [noButtons, container, fitCount, list]);
   useLayoutEffect(() => {
     list && container && noButtons && container?.hideButtons();
   }, [noButtons, container, list]);

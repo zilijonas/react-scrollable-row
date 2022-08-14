@@ -25,11 +25,6 @@ const SlideableComponent: React.FC<SlideableProps> = ({
   const slideable = useSlideable({ list, container, config, looped, swipeable, noButtons });
   const placeholdersCount = placeholderElement ? slideable.fittedItemsCount - items.length : 0;
 
-  const createList = useCallback(
-    (ref: HTMLDivElement) => setList(new ScrollableElement(ref, itemsMargin)),
-    [itemsMargin],
-  );
-
   return (
     <div
       ref={useCallback((ref: HTMLDivElement) => setContainer(new ContainerElement(ref)), [])}
@@ -53,7 +48,10 @@ const SlideableComponent: React.FC<SlideableProps> = ({
           </button>
         )}
       </div>
-      <div ref={createList} className={styles['scrollableContent']}>
+      <div
+        ref={useCallback((ref: HTMLDivElement) => setList(new ScrollableElement(ref, itemsMargin)), [itemsMargin])}
+        className={styles['scrollableContent']}
+      >
         <ul data-current="0" className={styles['list']}>
           {items.map((item, idx) => (
             <li key={idx} className={styles['listItem']} style={{ marginRight: `${itemsMargin}px` }}>

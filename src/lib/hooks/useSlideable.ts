@@ -21,15 +21,8 @@ export const useSlideable = ({ list, container, config, looped, swipeable, noBut
   useListener('resize', list && container && (() => list.updateStepSize(container.width)), [container, list]);
   useListener(
     'transitionend',
-    looped &&
-      !!fitCount &&
-      container &&
-      list &&
-      (() => {
-        list.cloneElements(fitCount);
-        list.updateItemsSize(container.width, fitCount);
-      }),
-    [container, list, looped, fitCount],
+    list && looped && !!fitCount && (() => list.cloneElements(fitCount)),
+    [list, looped, fitCount],
     list?.innerList,
   );
   useListener('resize', list && container && (() => list.updateItemsSize(container.width, fitCount)), [
@@ -38,15 +31,15 @@ export const useSlideable = ({ list, container, config, looped, swipeable, noBut
     list,
   ]);
 
-  useButtons({ container, list, fitCount, noButtons });
+  useButtons({ container, looped, list, fitCount, noButtons });
   useSwipe({ list, fitCount, swipeable });
 
   return useMemo(
     () => ({
       fittedItemsCount: fitCount,
-      scrollBack: () => list?.scrollBack(),
-      scrollForward: () => list?.scrollForward(fitCount),
+      scrollBack: () => list?.scrollBack(looped),
+      scrollForward: () => list?.scrollForward(looped),
     }),
-    [fitCount, list],
+    [fitCount, list, looped],
   );
 };
