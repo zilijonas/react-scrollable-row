@@ -4,9 +4,11 @@ export class ScrollableElement {
   public stepSize: number = 0;
   public scrollPosition: number = 0;
   public element: HTMLListElement | null;
+  private _givenItemsCount: number = 0;
 
-  constructor(el: HTMLDivElement | null) {
+  constructor(el: HTMLDivElement | null, givenItemsCount: number) {
     this.element = el as typeof this.element;
+    this._givenItemsCount = givenItemsCount;
   }
 
   get items() {
@@ -41,9 +43,16 @@ export class ScrollableElement {
     const list = this.innerList;
     const maxScroll = this.scrollWidth - this.width;
     const allItemsFit = this.items.length <= fitCount;
+    console.log(this.scrollPosition + this.stepSize, maxScroll);
     if (!list || (this.scrollPosition + this.stepSize < maxScroll && !allItemsFit)) return;
     const current = parseInt(list?.dataset.current!, 10);
-    list.appendChild(this.items[current].cloneNode(true));
+    this.items[current] && list.appendChild(this.items[current].cloneNode(true));
+    console.log({ current, given: this._givenItemsCount, all: this.items.length });
+    for (let i = 0; i < this._givenItemsCount / 2; i++) {
+      console.log(list.children[0].innerHTML);
+      list.children.length > this._givenItemsCount && list.children[0].remove();
+    }
+
     list.dataset.current = (current + 1).toString();
   }
 
