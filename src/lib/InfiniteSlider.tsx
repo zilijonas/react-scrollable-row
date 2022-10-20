@@ -28,7 +28,8 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
   const { itemsPerDisplay } = useItemsPerDisplayCount(config, containerWidth);
   const scroll = useScroll(list, itemsPerDisplay, containerWidth);
   const placeholdersCount = placeholderElement ? itemsPerDisplay - items.length : 0;
-  const itemWidth = containerWidth / itemsPerDisplay - itemsMargin;
+  const fullItemWidth = containerWidth / itemsPerDisplay;
+  const itemWidth = fullItemWidth - itemsMargin;
 
   return (
     <div ref={setContainer} className={styles['container']} style={{ height, width, maxWidth: width }}>
@@ -91,11 +92,11 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
 
   function handleGoForward() {
     scroll.forward();
-    shifter.forward(itemsPerDisplay);
+    // shifter.forward(itemsPerDisplay);
   }
 
   function handleGoBack() {
-    shifter.back(itemsPerDisplay);
+    // shifter.back(itemsPerDisplay);
     scroll.back();
   }
 };
