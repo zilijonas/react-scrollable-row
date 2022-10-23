@@ -1,56 +1,100 @@
-import { useEffect, useMemo, useReducer } from 'react';
+import { useMemo, useReducer } from 'react';
 
 const DEFAULT_TIME = 600;
 
-type State = { status: 'startReached' | 'scrolled' | 'endReached'; positionsShifted: number };
+type State = { status: 'startReached' | 'scrolled' | 'endReached'; positionsShifted: number; order: number[] };
 type Action = 'forward' | 'back';
 
-const initialState: State = { status: 'startReached', positionsShifted: 0 };
+const initialState: State = { status: 'startReached', positionsShifted: 0, order: [] };
 
-const reducer = (itemsPerDisplay: number, itemsCount: number) => (state: State, action: Action) => {
-  switch (action) {
-    case 'forward': {
-      if (state.status === 'endReached') return state;
-      const endWillBeReached = state.positionsShifted + itemsPerDisplay * 2 > itemsCount;
-      const nextShift = endWillBeReached ? itemsCount - state.positionsShifted - itemsPerDisplay : itemsPerDisplay;
-      return {
-        status: endWillBeReached ? 'endReached' : 'scrolled',
-        positionsShifted: state.positionsShifted + nextShift,
-      };
+const reducer =
+  (itemsPerDisplay: number, items: Element[], listEl: HTMLDivElement | null, stepSize: number) =>
+  (state: State, action: Action) => {
+    const defaultOrder = items.map((_, index) => index + 1);
+    const order = state.order.length ? state.order : defaultOrder;
+
+    switch (action) {
+      case 'forward': {
+        if (state.status === 'endReached') return state;
+        const endWillBeReached = state.positionsShifted + itemsPerDisplay * 2 > items.length;
+        items.forEach((el, index) => updateElementOrder(order[index])(el as any));
+        updateListPosition(listEl, state.positionsShifted + stepSize);
+
+        return {
+          status: endWillBeReached ? 'endReached' : 'scrolled',
+          positionsShifted: state.positionsShifted + stepSize,
+          order: order.map(i =>
+            i + itemsPerDisplay > items.length ? i + itemsPerDisplay - items.length : i + itemsPerDisplay,
+          ),
+        };
+      }
+      case 'back': {
+        const endWillBeReached = state.positionsShifted - stepSize * 2 < -(listEl?.scrollWidth ?? 0);
+
+        if (endWillBeReached) {
+          const nextShift = state.positionsShifted - (items.length % itemsPerDisplay) * (stepSize / itemsPerDisplay);
+          updateListPosition(listEl, nextShift);
+
+          const newOrder = [
+            ...order.slice(-itemsPerDisplay * 2 + 1),
+            ...order.slice(0, items.length - itemsPerDisplay * 2 + 1),
+          ];
+
+          setTimeout(() => {
+            items.forEach((el, index) => updateElementOrder(newOrder[index])(el as any));
+            updateListAnimationTime(0)(listEl);
+            updateListPosition(listEl, 0);
+            setTimeout(() => updateListAnimationTime(DEFAULT_TIME)(listEl), DEFAULT_TIME);
+          }, DEFAULT_TIME);
+
+          // updateListAnimationTime(DEFAULT_TIME)(listEl);
+
+          return {
+            status: endWillBeReached ? 'startReached' : 'scrolled',
+            positionsShifted: 0,
+            order: newOrder,
+          };
+        }
+
+        const nextShift = state.positionsShifted - stepSize;
+        // items.forEach((el, index) => updateElementOrder(order[index])(el as any));
+        updateListPosition(listEl, nextShift);
+
+        return {
+          status: endWillBeReached ? 'scrolled' : 'scrolled',
+          positionsShifted: nextShift,
+          order,
+        };
+      }
+      default:
+        throw new Error();
     }
-    case 'back': {
-      if (state.status === 'startReached') return state;
-      const startWillBeReached = state.positionsShifted - itemsPerDisplay < 0;
-      return {
-        status: startWillBeReached ? 'startReached' : 'scrolled',
-        positionsShifted: startWillBeReached ? 0 : state.positionsShifted - itemsPerDisplay,
-      };
-    }
-    default:
-      throw new Error();
-  }
-};
+  };
 
 export const useScroll = (listEl: HTMLDivElement | null, itemsPerDisplay: number, stepSize: number) => {
-  const itemWidth = stepSize / itemsPerDisplay;
+  // const itemWidth = stepSize / itemsPerDisplay;
   const items = useMemo(() => (listEl && Array.from(ulElement(listEl).children)) || [], [listEl]);
-  const [state, dispatch] = useReducer(reducer(itemsPerDisplay, items.length), initialState);
+  const [_state, dispatch] = useReducer(reducer(itemsPerDisplay, items, listEl, stepSize), initialState);
 
-  useEffect(() => items.forEach(updateListAnimationTime(DEFAULT_TIME)), [items]);
+  // useEffect(() => updateListAnimationTime(DEFAULT_TIME)(listEl), [listEl]);
 
-  useEffect(
-    () => items.forEach(updateItemsPosition(itemWidth, -state.positionsShifted * itemWidth)),
-    [items, itemWidth, state],
-  );
-
-  return { forward: () => dispatch('forward'), back: () => dispatch('back') };
+  return {
+    forward: () => dispatch('forward'),
+    back: () => dispatch('back'),
+  };
 };
 
-const updateItemsPosition = (itemSpace: number, translateX: number) => (el: HTMLLIElement) => {
-  el.style.setProperty('left', `${+el.id * itemSpace + translateX}px`);
+const updateListPosition = (el: HTMLDivElement | null, listPosition: number) => {
+  el?.style.setProperty('position', `absolute`);
+  el?.style.setProperty('left', `${listPosition}px`);
 };
 
-const updateListAnimationTime = (time: number) => (el: HTMLUListElement) =>
-  el.style.setProperty('transition', `left ${time}ms ease-in-out`);
+const updateListAnimationTime = (time: number) => (el: HTMLDivElement | null) =>
+  el?.style.setProperty('transition', `left ${time}ms ease-in-out`);
 
 const ulElement = (el: HTMLDivElement) => el.getElementsByTagName('ul')[0] as HTMLUListElement;
+
+const updateElementOrder = (order: number) => (el: HTMLLIElement) => {
+  // console.log(order);
+  el.style.setProperty('order', `${order}`);
+};

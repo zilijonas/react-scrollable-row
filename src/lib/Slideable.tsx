@@ -32,7 +32,7 @@ const SlideableComponent: React.FC<SlideableProps> = props => {
       <div
         ref={useCallback((ref: HTMLDivElement) => setContainer(new ContainerElement(ref)), [])}
         className={styles['container']}
-        style={{ height, width, maxWidth: width, visibility: 'hidden' }}
+        style={{ height, width, maxWidth: width, display: 'none' }}
       >
         <div className={styles['buttonContainer']}>
           {customButtonLeft ? (
@@ -87,7 +87,7 @@ const SlideableComponent: React.FC<SlideableProps> = props => {
           )}
         </div>
       </div>
-      <InfiniteSlide {...props} />
+      <InfiniteSlide height={100} {...props} />
     </>
   );
 };

@@ -3,7 +3,6 @@ import { ArrowIcon } from '../assets/ArrowIcon';
 import styles from '../styles.module.css';
 import { DEFAULT_ITEMS_PER_RESOLUTION_CONFIG } from './constants';
 import { SlideableProps } from './types';
-import { useItemsShifter } from './_hooks/useClones';
 import { useItemsPerDisplayCount } from './_hooks/useItemsPerDisplayCount';
 import { useScroll } from './_hooks/useScroll';
 
@@ -24,7 +23,7 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
   const [list, setList] = useState<HTMLDivElement | null>(null);
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
   const containerWidth = container?.clientWidth ?? 0;
-  const shifter = useItemsShifter(items);
+  // const shifter = useItemsShifter(items);
   const { itemsPerDisplay } = useItemsPerDisplayCount(config, containerWidth);
   const scroll = useScroll(list, itemsPerDisplay, containerWidth);
   const placeholdersCount = placeholderElement ? itemsPerDisplay - items.length : 0;
@@ -32,7 +31,11 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
   const itemWidth = fullItemWidth - itemsMargin;
 
   return (
-    <div ref={setContainer} className={styles['container']} style={{ height, width, maxWidth: width }}>
+    <div
+      ref={setContainer}
+      className={styles['container']}
+      style={{ height, minHeight: height, width, maxWidth: width }}
+    >
       <div className={styles['buttonContainer']}>
         {customButtonLeft ? (
           <span onClick={handleGoBack} className={`navButton ${styles['emptyButton']}`}>
@@ -52,10 +55,10 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
       </div>
       <div className={styles['scrollableContent']} ref={setList}>
         <ul data-current="0" className={styles['list']}>
-          {shifter.shiftedItems.map(item => (
+          {items.map((item, index) => (
             <li
               key={item.key}
-              id={item.index.toString()}
+              id={`${index}`}
               className={styles['listItem2']}
               style={{ minWidth: `${itemWidth}px`, width: `${itemWidth}px`, marginRight: `${itemsMargin}px` }}
             >

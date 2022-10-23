@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 export const useItemsShifter = (items: JSX.Element[]) => {
   const [shiftedItems, setShiftedItems] = useState(items.map((item, index) => ({ ...item, index })));
   // const cachedItems = useRef<typeof shiftedItems>();
 
-  useEffect(() => console.log(shiftedItems.map(i => i.index)), [shiftedItems]);
+  // useEffect(() => console.log(shiftedItems.map(i => i.index)), [shiftedItems]);
 
   return {
     shiftedItems,
