@@ -10,9 +10,8 @@ export const useListener = <K extends keyof WindowEventMap, L extends HTMLElemen
     if (!fn || typeof fn !== 'function') return;
     try {
       fn();
-    } catch {
-      /**/
-    }
+      // eslint-disable-next-line no-empty
+    } catch {}
     typeof type === 'string'
       ? (element || window).addEventListener(type, fn as VoidFunction, false)
       : type.forEach(t => (element || window).addEventListener(t, fn as VoidFunction, false));

@@ -9,6 +9,7 @@
 }
 
 .scrollableContent {
+  position: absolute;
   height: 100%;
   width: 100%;
   display: flex;
@@ -35,8 +36,6 @@
   width: 100%;
   list-style-type: none;
   pointer-events: fill;
-  /* transition: left 600ms ease-in-out;
-  transition: transform 600ms ease-in-out; */
 }
 
 .listItem {

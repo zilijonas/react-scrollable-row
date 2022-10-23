@@ -23,7 +23,6 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
   const [list, setList] = useState<HTMLDivElement | null>(null);
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
   const containerWidth = container?.clientWidth ?? 0;
-  // const shifter = useItemsShifter(items);
   const { itemsPerDisplay } = useItemsPerDisplayCount(config, containerWidth);
   const scroll = useScroll(list, itemsPerDisplay, containerWidth);
   const placeholdersCount = placeholderElement ? itemsPerDisplay - items.length : 0;
@@ -38,14 +37,14 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
     >
       <div className={styles['buttonContainer']}>
         {customButtonLeft ? (
-          <span onClick={handleGoBack} className={`navButton ${styles['emptyButton']}`}>
+          <span onClick={scroll.back} className={`navButton ${styles['emptyButton']}`}>
             {customButtonLeft}
           </span>
         ) : (
           <button
             id="button-back"
             aria-label="Back"
-            onClick={handleGoBack}
+            onClick={scroll.back}
             className={`navButton ${styles['emptyButton']} ${styles['button']}`}
             style={buttonsStyle}
           >
@@ -75,14 +74,14 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
       </div>
       <div className={styles['buttonContainer']}>
         {customButtonRight ? (
-          <span onClick={handleGoForward} className={`navButton ${styles['emptyButton']}`}>
+          <span onClick={scroll.forward} className={`navButton ${styles['emptyButton']}`}>
             {customButtonRight}
           </span>
         ) : (
           <button
             id="button-right"
             aria-label="Forward"
-            onClick={handleGoForward}
+            onClick={scroll.forward}
             className={`navButton ${styles['emptyButton']} ${styles['button']}`}
             style={buttonsStyle}
           >
@@ -92,16 +91,6 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
       </div>
     </div>
   );
-
-  function handleGoForward() {
-    scroll.forward();
-    // shifter.forward(itemsPerDisplay);
-  }
-
-  function handleGoBack() {
-    // shifter.back(itemsPerDisplay);
-    scroll.back();
-  }
 };
 
 export const InfiniteSlide = React.memo(InfiniteSlider);

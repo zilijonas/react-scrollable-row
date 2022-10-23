@@ -30,9 +30,9 @@ const reducer =
 
           setTimeout(() => {
             items.forEach((el, index) => updateElementOrder(newOrder[index])(el as any));
-            updateListAnimationTime(0)(listEl);
+            updateListAnimationTime(listEl, 0);
             updateListPosition(listEl, 0);
-            setTimeout(() => updateListAnimationTime(DEFAULT_TIME)(listEl), DEFAULT_TIME);
+            setTimeout(() => updateListAnimationTime(listEl, DEFAULT_TIME), DEFAULT_TIME);
           }, DEFAULT_TIME);
 
           return { shift: 0, order: newOrder };
@@ -53,11 +53,11 @@ const reducer =
           ];
 
           items.forEach((el, index) => updateElementOrder(newOrder[index])(el as any));
-          updateListAnimationTime(0)(listEl);
+          updateListAnimationTime(listEl, 0);
           updateListPosition(listEl, -stepSize);
 
           setTimeout(() => {
-            updateListAnimationTime(DEFAULT_TIME)(listEl);
+            updateListAnimationTime(listEl, DEFAULT_TIME);
             updateListPosition(listEl, 0);
           }, 0);
 
@@ -80,7 +80,7 @@ const reducer =
   };
 
 export const useScroll = (listEl: HTMLDivElement | null, itemsPerDisplay: number, stepSize: number) => {
-  const items = useMemo(() => (listEl && Array.from(ulElement(listEl).children)) || [], [listEl]);
+  const items = useMemo(() => (listEl && Array.from(listEl.getElementsByTagName('ul')[0].children)) || [], [listEl]);
   const [_state, dispatch] = useReducer(reducer(itemsPerDisplay, items, listEl, stepSize), initialState);
 
   return {
@@ -89,17 +89,10 @@ export const useScroll = (listEl: HTMLDivElement | null, itemsPerDisplay: number
   };
 };
 
-const updateListPosition = (el: HTMLDivElement | null, listPosition: number) => {
-  el?.style.setProperty('position', `absolute`);
+const updateListPosition = (el: HTMLDivElement | null, listPosition: number) =>
   el?.style.setProperty('left', `${listPosition}px`);
-};
 
-const updateListAnimationTime = (time: number) => (el: HTMLDivElement | null) =>
+const updateListAnimationTime = (el: HTMLDivElement | null, time: number) =>
   el?.style.setProperty('transition', `left ${time}ms ease-in-out`);
 
-const ulElement = (el: HTMLDivElement) => el.getElementsByTagName('ul')[0] as HTMLUListElement;
-
-const updateElementOrder = (order: number) => (el: HTMLLIElement) => {
-  // console.log(order);
-  el.style.setProperty('order', `${order}`);
-};
+const updateElementOrder = (order: number) => (el: HTMLLIElement) => el.style.setProperty('order', `${order}`);
