@@ -9,9 +9,9 @@ import { useScroll } from './_hooks/useScroll';
 const InfiniteSlider: React.FC<SlideableProps> = ({
   items,
   buttonsStyle,
+  looped = false,
   // noButtons = false,
-  // looped = false,
-  // swipeable = false,
+  // swipeable = false, TODO: implement swipeable
   width = '100%',
   height = 'auto',
   customButtonLeft,
@@ -24,10 +24,10 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
   const containerWidth = container?.clientWidth ?? 0;
   const { itemsPerDisplay } = useItemsPerDisplayCount(config, containerWidth);
-  const scroll = useScroll(list, itemsPerDisplay, containerWidth);
   const placeholdersCount = placeholderElement ? itemsPerDisplay - items.length : 0;
   const fullItemWidth = containerWidth / itemsPerDisplay;
   const itemWidth = fullItemWidth - itemsMargin;
+  const scroll = useScroll(list, itemsPerDisplay, looped ? 'infinite' : 'finite');
 
   return (
     <div

@@ -6,6 +6,7 @@
   flex-basis: 100%;
   background: transparent;
   box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .scrollableContent {
@@ -16,7 +17,6 @@
   align-self: center;
   justify-content: center;
   background: transparent;
-  /* overflow-x: hidden; */
   scrollbar-width: none;
   pointer-events: none;
   transition: left 600ms ease-in-out;
