@@ -39,22 +39,6 @@ export class ScrollableElement {
     });
   }
 
-  cloneElements(_fitCount: number) {
-    // const list = this.innerList;
-    // const maxScroll = this.scrollWidth - this.width;
-    // const allItemsFit = this.items.length <= fitCount;
-    // console.log(this.scrollPosition + this.stepSize, maxScroll);
-    // if (!list || (this.scrollPosition + this.stepSize < maxScroll && !allItemsFit)) return;
-    // const current = parseInt(list?.dataset.current!, 10);
-    // this.items[current] && list.appendChild(this.items[current].cloneNode(true));
-    // console.log({ current, given: this._givenItemsCount, all: this.items.length });
-    // for (let i = 0; i < this._givenItemsCount / 2; i++) {
-    //   console.log(list.children[0].innerHTML);
-    //   list.children.length > this._givenItemsCount && list.children[0].remove();
-    // }
-    // list.dataset.current = (current + 1).toString();
-  }
-
   scrollBack(itemsMargin: number) {
     if (!this.element || this.scrollPosition < 0) return;
     const scrollEndReached = this.scrollPosition + this.stepSize >= this.scrollWidth;

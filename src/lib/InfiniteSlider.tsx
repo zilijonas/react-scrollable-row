@@ -91,6 +91,13 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
       </div>
     </div>
   );
+
+  // function loopedItems(items: JSX.Element[]): JSX.Element[] {
+  //   if (items.length < itemsPerDisplay * 2) {
+  //     return loopedItems([...items, ...items]);
+  //   }
+  //   return items;
+  // }
 };
 
 export const InfiniteSlide = React.memo(InfiniteSlider);

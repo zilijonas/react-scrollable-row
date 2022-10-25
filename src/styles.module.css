@@ -6,7 +6,7 @@
   flex-basis: 100%;
   background: transparent;
   box-sizing: border-box;
-  overflow-x: hidden;
+  /* overflow-x: hidden; */
 }
 
 .scrollableContent {
