@@ -1,22 +1,4 @@
-export const DEFAULT_TIME = 600;
-
-export const resetAnimationTimeouts = () => timeouts.forEach(clearTimeout);
-
-let timeouts: NodeJS.Timeout[] = [];
-export const delayAnimation = (cb: VoidFunction, time: number = DEFAULT_TIME) => {
-  const timeout = setTimeout(cb, time);
-  timeouts.push(timeout);
-};
-
-let isThrottled = false;
-export const throttle = (cb: VoidFunction) => {
-  if (isThrottled) return;
-
-  isThrottled = true;
-  const timeout = setTimeout(() => (isThrottled = false), DEFAULT_TIME);
-  timeouts.push(timeout);
-  cb();
-};
+import { DEFAULT_TIME } from '../constants';
 
 export function slideTo(
   listEl: HTMLDivElement | null,

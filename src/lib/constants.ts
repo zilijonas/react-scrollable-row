@@ -6,3 +6,5 @@ export const DEFAULT_ITEMS_PER_RESOLUTION_CONFIG: ItemsPerScrollWidthConfig = {
   1200: 4,
   max: 5,
 };
+
+export const DEFAULT_TIME = 600;

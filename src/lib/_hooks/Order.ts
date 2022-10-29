@@ -1,4 +1,4 @@
-import { countListItems, updateListOrder } from './utilts';
+import { countListItems, updateListOrder } from './DOM-utils';
 
 export class Order {
   private listEl: HTMLDivElement | null;

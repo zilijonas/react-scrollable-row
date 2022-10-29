@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { ItemsPerScrollWidthConfig } from '../types';
 import { useListener } from './useListener';
 
-export const useItemsPerDisplayCount = (config: ItemsPerScrollWidthConfig, width: number) => {
+export const useShownItemsCount = (config: ItemsPerScrollWidthConfig, width: number) => {
   const [count, setCount] = useState<number>(countMax(width, config));
   useListener('resize', () => setCount(countMax(width, config)), [width, resolutions, config]);
 
-  return { itemsPerDisplay: count };
+  return { count };
 };
 
 const countMax = (width: number, config: ItemsPerScrollWidthConfig) =>

@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { ArrowIcon } from '../assets/ArrowIcon';
 import styles from '../styles.module.css';
 import { DEFAULT_ITEMS_PER_RESOLUTION_CONFIG } from './constants';
 import { SlideableProps } from './types';
-import { useItemsPerDisplayCount } from './_hooks/useItemsPerDisplayCount';
 import { useScroll } from './_hooks/useScroll';
+import { useShownItemsCount } from './_hooks/useShownItemsCount';
 
 const InfiniteSlider: React.FC<SlideableProps> = ({
   items,
@@ -21,26 +21,17 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
   config = DEFAULT_ITEMS_PER_RESOLUTION_CONFIG,
 }) => {
   const [list, setList] = useState<HTMLDivElement | null>(null);
-  // const [container, setContainer] = useState<HTMLDivElement | null>(null);
-  const listRef = useRef<HTMLDivElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const containerWidth = containerRef.current?.clientWidth ?? 0;
-  const { itemsPerDisplay } = useItemsPerDisplayCount(config, containerWidth);
-  const placeholdersCount = placeholderElement ? itemsPerDisplay - items.length : 0;
-  const fullItemWidth = containerWidth / itemsPerDisplay;
+  const [container, setContainer] = useState<HTMLDivElement | null>(null);
+  const containerWidth = container?.clientWidth ?? 0;
+  const shownItems = useShownItemsCount(config, containerWidth);
+  const placeholdersCount = placeholderElement ? shownItems.count - items.length : 0;
+  const fullItemWidth = containerWidth / shownItems.count;
   const itemWidth = fullItemWidth - itemsMargin;
-  // const order = useOrder(list, itemsPerDisplay);
-  const scroll = useScroll(itemsPerDisplay, list, looped ? 'infinite' : 'finite');
-
-  useEffect(() => {
-    if (listRef.current) {
-      setList(listRef.current);
-    }
-  }, [listRef]);
+  const scroll = useScroll(shownItems.count, list, looped ? 'infinite' : 'finite');
 
   return (
     <div
-      ref={containerRef}
+      ref={setContainer}
       className={styles['container']}
       style={{ height, minHeight: height, width, maxWidth: width }}
     >
@@ -61,12 +52,11 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
           </button>
         )}
       </div>
-      <div className={styles['scrollableContent']} ref={listRef}>
+      <div className={styles['scrollableContent']} ref={setList}>
         <ul className={styles['list']}>
-          {items.map((item, index) => (
+          {items.map(item => (
             <li
               key={item.key}
-              id={`${index}`}
               className={styles['listItem2']}
               style={{ minWidth: `${itemWidth}px`, width: `${itemWidth}px`, marginRight: `${itemsMargin}px` }}
             >
@@ -102,7 +92,7 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
   );
 
   // function loopedItems(items: JSX.Element[]): JSX.Element[] {
-  //   if (items.length < itemsPerDisplay * 2) {
+  //   if (items.length < shownItems.count * 2) {
   //     return loopedItems([...items, ...items]);
   //   }
   //   return items;
