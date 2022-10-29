@@ -5,7 +5,7 @@ import { ListItem } from './ui/ListItem';
 import { PlaceholderItem } from './ui/PlaceholderItem';
 import { WidthControl } from './ui/WidthControl';
 
-const items = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const items = [1, 2, 3, 4, 5, 6, 7, 8];
 
 export const App: React.FC = () => {
   const [width, setWidth] = useState<SlideableProps['width']>(500);

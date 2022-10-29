@@ -1,11 +1,11 @@
-import { useEffect } from 'react';
-import { resetAnimationTimeouts, throttle } from './animations';
-import { ListType, useScrollReducer } from './reducer';
+import { useMemo } from 'react';
+import { throttle } from './animations';
+import { Order } from './Order';
+import { ScrollType, useScrollReducer } from './reducer';
 
-export const useScroll = (listEl: HTMLDivElement | null, itemsPerDisplay: number, type: ListType) => {
-  const [, dispatch] = useScrollReducer(itemsPerDisplay, listEl, type);
-
-  useEffect(() => () => resetAnimationTimeouts(), []);
+export const useScroll = (itemsPerDisplay: number, listEl: HTMLDivElement | null, type: ScrollType) => {
+  const order = useMemo(() => new Order(listEl, itemsPerDisplay), [listEl, itemsPerDisplay]);
+  const [, dispatch] = useScrollReducer(itemsPerDisplay, listEl, order, type);
 
   return {
     forward: () => throttle(() => dispatch('forward')),

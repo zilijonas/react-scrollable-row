@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ArrowIcon } from '../assets/ArrowIcon';
 import styles from '../styles.module.css';
 import { DEFAULT_ITEMS_PER_RESOLUTION_CONFIG } from './constants';
@@ -21,23 +21,32 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
   config = DEFAULT_ITEMS_PER_RESOLUTION_CONFIG,
 }) => {
   const [list, setList] = useState<HTMLDivElement | null>(null);
-  const [container, setContainer] = useState<HTMLDivElement | null>(null);
-  const containerWidth = container?.clientWidth ?? 0;
+  // const [container, setContainer] = useState<HTMLDivElement | null>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const containerWidth = containerRef.current?.clientWidth ?? 0;
   const { itemsPerDisplay } = useItemsPerDisplayCount(config, containerWidth);
   const placeholdersCount = placeholderElement ? itemsPerDisplay - items.length : 0;
   const fullItemWidth = containerWidth / itemsPerDisplay;
   const itemWidth = fullItemWidth - itemsMargin;
-  const scroll = useScroll(list, itemsPerDisplay, looped ? 'infinite' : 'finite');
+  // const order = useOrder(list, itemsPerDisplay);
+  const scroll = useScroll(itemsPerDisplay, list, looped ? 'infinite' : 'finite');
+
+  useEffect(() => {
+    if (listRef.current) {
+      setList(listRef.current);
+    }
+  }, [listRef]);
 
   return (
     <div
-      ref={setContainer}
+      ref={containerRef}
       className={styles['container']}
       style={{ height, minHeight: height, width, maxWidth: width }}
     >
       <div className={styles['buttonContainer']}>
         {customButtonLeft ? (
-          <span onClick={scroll.back} className={`navButton ${styles['emptyButton']}`}>
+          <span onClick={scroll.back} className={`navButton ${styles['emptyButton']}`} role="button">
             {customButtonLeft}
           </span>
         ) : (
@@ -52,8 +61,8 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
           </button>
         )}
       </div>
-      <div className={styles['scrollableContent']} ref={setList}>
-        <ul data-current="0" className={styles['list']}>
+      <div className={styles['scrollableContent']} ref={listRef}>
+        <ul className={styles['list']}>
           {items.map((item, index) => (
             <li
               key={item.key}
@@ -100,4 +109,4 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
   // }
 };
 
-export const InfiniteSlide = React.memo(InfiniteSlider);
+export const InfiniteSlide = React.memo(InfiniteSlider, (_prevProps, _nextProps) => true);

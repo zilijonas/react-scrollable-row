@@ -18,11 +18,14 @@ export const throttle = (cb: VoidFunction) => {
   cb();
 };
 
-export function animate(listEl: HTMLDivElement | null, params?: { shift: number; order?: number[]; time?: number }) {
+export function slideTo(
+  listEl: HTMLDivElement | null,
+  params?: { shift: number; time?: number; callback?: VoidFunction },
+) {
   if (!listEl) return;
 
   updateListAnimationTime(listEl, params?.time ?? DEFAULT_TIME);
-  updateElementsOrder(listEl, params?.order);
+  params?.callback?.();
   updateListPosition(listEl, params?.shift);
 }
 
@@ -31,11 +34,3 @@ const updateListPosition = (el: HTMLDivElement | null, position?: number) =>
 
 const updateListAnimationTime = (el: HTMLDivElement | null, time: number) =>
   el?.style.setProperty('transition', `left ${time}ms ease-in-out`);
-
-const updateElementsOrder = (el: HTMLDivElement | null, order?: number[]) =>
-  order?.forEach((position, index) =>
-    (el?.getElementsByTagName('ul')[0].children.item(index) as HTMLDivElement | null)?.style.setProperty(
-      'order',
-      `${position}`,
-    ),
-  );

@@ -2,12 +2,11 @@ import { useLayoutEffect } from 'react';
 
 export const useListener = <K extends keyof WindowEventMap, L extends HTMLElement>(
   type: K | K[],
-  fn: Function | boolean | null,
+  fn: Function,
   deps?: React.DependencyList,
   element?: L | null,
 ) =>
   useLayoutEffect(() => {
-    if (!fn || typeof fn !== 'function') return;
     try {
       fn();
       // eslint-disable-next-line no-empty
