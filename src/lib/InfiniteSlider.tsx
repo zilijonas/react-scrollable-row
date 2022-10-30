@@ -3,7 +3,7 @@ import { ArrowIcon } from '../assets/ArrowIcon';
 import styles from '../styles.module.css';
 import { DEFAULT_ITEMS_PER_RESOLUTION_CONFIG } from './constants';
 import { SlideableProps } from './types';
-import { AnimatedList } from './_hooks/AnimatedList';
+import { AnimatedButtons, AnimatedList } from './_hooks/AnimatedList';
 import { resetAsyncTimeouts } from './_hooks/async-utils';
 import { useScroll } from './_hooks/useScroll';
 import { useShownItemsCount } from './_hooks/useShownItemsCount';
@@ -23,24 +23,16 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
   config = DEFAULT_ITEMS_PER_RESOLUTION_CONFIG,
 }) => {
   const [list, setList] = useState<HTMLDivElement | null>(null);
-  const listWidth = list?.clientWidth || 0;
-  const shownItems = useShownItemsCount(config, listWidth);
-  const placeholdersCount = placeholderElement ? shownItems.count - items.length : 0;
-  const itemWidth = listWidth / shownItems.count - itemsMargin;
+  const shownItems = useShownItemsCount(config, list);
   const leftButtonRef = useRef<HTMLDivElement>(null);
   const rightButtonRef = useRef<HTMLDivElement>(null);
-  const animatedList = useMemo(
-    () =>
-      list && shownItems.count
-        ? new AnimatedList(
-            list,
-            [leftButtonRef.current, rightButtonRef.current].filter(Boolean) as HTMLDivElement[],
-            shownItems.count,
-          )
-        : null,
-    [list, shownItems.count],
-  );
+  const animatedList = useMemo(() => {
+    if (!list || !shownItems.count) return null;
+    const buttons = [leftButtonRef.current, rightButtonRef.current].filter(Boolean) as AnimatedButtons;
+    return new AnimatedList(list, buttons, shownItems.count, itemsMargin);
+  }, [list, shownItems.count, itemsMargin]);
   const scroll = useScroll(animatedList, looped ? 'infinite' : 'finite');
+  const placeholdersCount = placeholderElement ? shownItems.count - items.length : 0;
 
   useEffect(() => () => resetAsyncTimeouts(), []);
 
@@ -66,21 +58,13 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
       <div className={styles['scrollableContent']} ref={setList}>
         <ul className={styles['list']}>
           {items.map(item => (
-            <li
-              key={item.key}
-              className={styles['listItem2']}
-              style={{ minWidth: `${itemWidth}px`, width: `${itemWidth}px`, marginRight: `${itemsMargin}px` }}
-            >
+            <li key={item.key} className={styles['listItem2']} style={{ marginRight: `${itemsMargin}px` }}>
               {item}
             </li>
           ))}
           {placeholdersCount > 0 &&
             Array.from(Array(placeholdersCount).keys()).map(key => (
-              <li
-                key={key}
-                className={styles['listItem']}
-                style={{ minWidth: `${itemWidth}px`, width: `${itemWidth}px`, marginRight: `${itemsMargin}px` }}
-              >
+              <li key={key} className={styles['listItem2']} style={{ marginRight: `${itemsMargin}px` }}>
                 {placeholderElement}
               </li>
             ))}

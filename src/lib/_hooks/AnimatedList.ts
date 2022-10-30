@@ -1,32 +1,57 @@
 import { DEFAULT_TIME } from '../constants';
 import { delay, delayTillNextFrame } from './async-utils';
-import { countListItems } from './DOM-utils';
 import { Order } from './Order';
 
-export class AnimatedList {
-  public listWidth: number;
-  public stepSize: number;
-  public remainderStepSize: number;
-  public itemsCount: number;
-  public shownItemsCount: number;
-  private _listEl: HTMLDivElement | null;
-  private _buttons: HTMLDivElement[];
-  private _order: Order;
+export type AnimatedButtons = [HTMLDivElement, HTMLDivElement];
 
-  constructor(listEl: HTMLDivElement, buttons: HTMLDivElement[], shownItemsCount: number) {
-    this.itemsCount = countListItems(listEl);
+export class AnimatedList {
+  public shownItemsCount: number;
+  public element: HTMLDivElement;
+  private _order: Order;
+  private _items: HTMLLIElement[];
+  private _buttons: HTMLDivElement[];
+  private _itemMargin: number;
+
+  constructor(listEl: HTMLDivElement, buttons: AnimatedButtons, shownItemsCount: number, itemMargin: number) {
     this.shownItemsCount = shownItemsCount;
-    this.stepSize = listEl.clientWidth;
-    this.listWidth = (listEl.clientWidth / shownItemsCount) * this.itemsCount;
-    this.remainderStepSize = (this.stepSize / shownItemsCount) * (this.itemsCount % shownItemsCount) || this.stepSize;
-    this._listEl = listEl;
+    this.element = listEl;
     this._buttons = buttons;
+    this._itemMargin = itemMargin;
     this._order = new Order(listEl, shownItemsCount);
+    this._items = Array.from(listEl.getElementsByTagName('ul')[0].children) as HTMLLIElement[];
+  }
+
+  get length() {
+    return this._items.length;
+  }
+
+  get itemWidth() {
+    return this.element.clientWidth / this.shownItemsCount - this._itemMargin;
+  }
+
+  get listWidth() {
+    return (this.element.clientWidth / this.shownItemsCount) * this._items.length;
+  }
+
+  get stepSize() {
+    return this.element.clientWidth;
+  }
+
+  get remainderStepSize() {
+    return (this.stepSize / this.shownItemsCount) * (this._items.length % this.shownItemsCount) || this.stepSize;
+  }
+
+  public updateItemsWidth() {
+    console.log(this._items);
+    this._items.forEach(item => {
+      item.style.setProperty('width', `${this.itemWidth}px`);
+      item.style.setProperty('min-width', `${this.itemWidth}px`);
+    });
   }
 
   public slide(x: number, time: number = DEFAULT_TIME) {
-    updateListAnimationTime(this._listEl, time);
-    updateListPosition(this._listEl, x);
+    updateListAnimationTime(this.element, time);
+    updateListPosition(this.element, x);
   }
 
   public slideAndSwapForward(x: number) {

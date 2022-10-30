@@ -14,12 +14,22 @@ export const useScroll = (animatedList: AnimatedList | null, type: ScrollType) =
     if (type === 'finite') {
       animatedList.disableBack();
     }
-    if (animatedList.itemsCount <= animatedList.shownItemsCount) {
+    if (animatedList.length <= animatedList.shownItemsCount) {
       animatedList.disableForward();
     }
   }, [animatedList, type]);
 
-  useListener({ type: 'resize', fn: () => animatedList?.slide(0) }, [animatedList]);
+  useListener(
+    {
+      type: 'resize',
+      fn: () => {
+        animatedList?.slide(0);
+        animatedList?.updateItemsWidth();
+      },
+      disabled: !animatedList,
+    },
+    [animatedList],
+  );
 
   return {
     forward: () => throttle(() => dispatch('forward')),

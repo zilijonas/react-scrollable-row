@@ -16,11 +16,10 @@ interface Props {
   config: ItemsPerScrollWidthConfig;
 }
 
-export const useSlideable = ({ list, container, config, looped, itemsMargin: margin, swipeable, noButtons }: Props) => {
+export const useSlideable = ({ list, container, config, itemsMargin: margin, swipeable, noButtons }: Props) => {
   const { fitCount } = useFitCount({ container, config });
 
   useListener('resize', list && container && (() => list.updateStepSize(container.width)), [container, list]);
-  useListener('scroll', looped && list && (() => null), [list, looped, fitCount], list?.element);
   useListener('resize', list && container && (() => list.updateItemsSize(container.width, fitCount, margin)), [
     container,
     fitCount,
