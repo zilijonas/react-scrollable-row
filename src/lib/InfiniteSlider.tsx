@@ -21,20 +21,14 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
   config = DEFAULT_ITEMS_PER_RESOLUTION_CONFIG,
 }) => {
   const [list, setList] = useState<HTMLDivElement | null>(null);
-  const [container, setContainer] = useState<HTMLDivElement | null>(null);
-  const containerWidth = container?.clientWidth ?? 0;
-  const shownItems = useShownItemsCount(config, containerWidth);
+  const listWidth = list?.clientWidth || 0;
+  const shownItems = useShownItemsCount(config, listWidth);
   const placeholdersCount = placeholderElement ? shownItems.count - items.length : 0;
-  const fullItemWidth = containerWidth / shownItems.count;
-  const itemWidth = fullItemWidth - itemsMargin;
+  const itemWidth = listWidth / shownItems.count - itemsMargin;
   const scroll = useScroll(shownItems.count, list, looped ? 'infinite' : 'finite');
 
   return (
-    <div
-      ref={setContainer}
-      className={styles['container']}
-      style={{ height, minHeight: height, width, maxWidth: width }}
-    >
+    <div className={styles['container']} style={{ height, minHeight: height, width, maxWidth: width }}>
       <div className={styles['buttonContainer']}>
         {customButtonLeft ? (
           <span onClick={scroll.back} className={`navButton ${styles['emptyButton']}`} role="button">
@@ -65,7 +59,11 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
           ))}
           {placeholdersCount > 0 &&
             Array.from(Array(placeholdersCount).keys()).map(key => (
-              <li key={key} className={styles['listItem']} style={{ marginRight: `${itemsMargin}px` }}>
+              <li
+                key={key}
+                className={styles['listItem']}
+                style={{ minWidth: `${itemWidth}px`, width: `${itemWidth}px`, marginRight: `${itemsMargin}px` }}
+              >
                 {placeholderElement}
               </li>
             ))}

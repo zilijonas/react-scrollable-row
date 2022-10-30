@@ -1,11 +1,14 @@
 import { useEffect, useMemo } from 'react';
+import { AnimatedList } from './AnimatedList';
 import { resetAsyncTimeouts, throttle } from './async-utils';
-import { Order } from './Order';
 import { ScrollType, useScrollReducer } from './reducer';
 
 export const useScroll = (shownItemsCount: number, listEl: HTMLDivElement | null, type: ScrollType) => {
-  const order = useMemo(() => new Order(listEl, shownItemsCount), [listEl, shownItemsCount]);
-  const [, dispatch] = useScrollReducer(shownItemsCount, listEl, order, type);
+  const animatedList = useMemo(
+    () => (listEl && shownItemsCount ? new AnimatedList(listEl, shownItemsCount) : null),
+    [listEl, shownItemsCount],
+  );
+  const [, dispatch] = useScrollReducer(animatedList, type);
 
   useEffect(() => () => resetAsyncTimeouts(), []);
 
