@@ -8,7 +8,6 @@ export class AnimatedList {
   public shownItemsCount: number;
   public element: HTMLDivElement;
   private _order: Order;
-  private _items: HTMLLIElement[];
   private _buttons: HTMLDivElement[];
   private _itemMargin: number;
 
@@ -18,11 +17,10 @@ export class AnimatedList {
     this._buttons = buttons;
     this._itemMargin = itemMargin;
     this._order = new Order(listEl, shownItemsCount);
-    this._items = Array.from(listEl.getElementsByTagName('ul')[0].children) as HTMLLIElement[];
   }
 
   get length() {
-    return this._items.length;
+    return this.element.getElementsByTagName('ul')[0].children.length;
   }
 
   get itemWidth() {
@@ -30,7 +28,7 @@ export class AnimatedList {
   }
 
   get listWidth() {
-    return (this.element.clientWidth / this.shownItemsCount) * this._items.length;
+    return (this.element.clientWidth / this.shownItemsCount) * this.length;
   }
 
   get stepSize() {
@@ -38,15 +36,7 @@ export class AnimatedList {
   }
 
   get remainderStepSize() {
-    return (this.stepSize / this.shownItemsCount) * (this._items.length % this.shownItemsCount) || this.stepSize;
-  }
-
-  public updateItemsWidth() {
-    console.log(this._items);
-    this._items.forEach(item => {
-      item.style.setProperty('width', `${this.itemWidth}px`);
-      item.style.setProperty('min-width', `${this.itemWidth}px`);
-    });
+    return (this.stepSize / this.shownItemsCount) * (this.length % this.shownItemsCount) || this.stepSize;
   }
 
   public slide(x: number, time: number = DEFAULT_TIME) {
@@ -82,6 +72,13 @@ export class AnimatedList {
 
   public enableForward() {
     this._buttons[1].removeAttribute('hidden');
+  }
+
+  public updateItemsWidth() {
+    (Array.from(this.element.getElementsByTagName('ul')[0].children) as HTMLLIElement[]).forEach(item => {
+      item.style.setProperty('width', `${this.itemWidth}px`);
+      item.style.setProperty('min-width', `${this.itemWidth}px`);
+    });
   }
 }
 
