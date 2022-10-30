@@ -7,6 +7,7 @@ import { AnimatedButtons, AnimatedList } from './_hooks/AnimatedList';
 import { resetAsyncTimeouts } from './_hooks/async-utils';
 import { useScroll } from './_hooks/useScroll';
 import { useShownItemsCount } from './_hooks/useShownItemsCount';
+import { useSwipe } from './_hooks/useSwipe';
 
 const InfiniteSlider: React.FC<SlideableProps> = ({
   items,
@@ -33,6 +34,8 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
   }, [list, shownItems.count, itemsMargin]);
   const scroll = useScroll(animatedList, looped ? 'infinite' : 'finite');
   const placeholdersCount = placeholderElement ? shownItems.count - items.length : 0;
+
+  useSwipe(animatedList, scroll.forward, scroll.back);
 
   useEffect(() => () => resetAsyncTimeouts(), []);
 

@@ -10,6 +10,7 @@ export const useShownItemsCount = (config: ItemsPerScrollWidthConfig, list: HTML
       type: 'resize',
       fn: () => setCount(countMax(list!.clientWidth, config)),
       disabled: !list,
+      runOnInit: true,
     },
     [list, resolutions, config],
   );

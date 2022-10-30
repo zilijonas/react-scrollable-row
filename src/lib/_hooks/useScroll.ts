@@ -27,6 +27,7 @@ export const useScroll = (animatedList: AnimatedList | null, type: ScrollType) =
         animatedList?.updateItemsWidth();
       },
       disabled: !animatedList,
+      runOnInit: true,
     },
     [animatedList],
   );

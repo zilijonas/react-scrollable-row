@@ -4,16 +4,19 @@ type ListenerParams<K, L> = {
   type: K | K[];
   element?: L | null;
   disabled?: boolean;
-  fn: VoidFunction;
+  runOnInit?: boolean;
+  fn: EventListenerOrEventListenerObject;
 };
 
 export const useListener = <K extends keyof WindowEventMap, L extends HTMLElement>(
-  { type, element, disabled, fn }: ListenerParams<K, L>,
+  { type, element, disabled, runOnInit, fn }: ListenerParams<K, L>,
   deps?: React.DependencyList,
 ) =>
   useLayoutEffect(() => {
     if (disabled) return;
-    fn();
+    if (runOnInit && typeof fn === 'function') {
+      (fn as VoidFunction)();
+    }
     typeof type === 'string'
       ? (element || window).addEventListener(type, fn, false)
       : type.forEach(t => (element || window).addEventListener(t, fn, false));
