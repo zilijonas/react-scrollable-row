@@ -8,7 +8,9 @@ export const useScroll = (animatedList: AnimatedList | null, type: ScrollType) =
   const [, dispatch] = useScrollReducer(animatedList, type);
 
   useLayoutEffect(() => {
-    if (!animatedList) return;
+    if (!animatedList) {
+      return;
+    }
     if (type === 'finite') {
       animatedList.disableBack();
     }
