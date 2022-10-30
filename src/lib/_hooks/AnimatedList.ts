@@ -10,15 +10,17 @@ export class AnimatedList {
   public itemsCount: number;
   public shownItemsCount: number;
   private _listEl: HTMLDivElement | null;
+  private _buttons: HTMLDivElement[];
   private _order: Order;
 
-  constructor(listEl: HTMLDivElement, shownItemsCount: number) {
+  constructor(listEl: HTMLDivElement, buttons: HTMLDivElement[], shownItemsCount: number) {
     this.itemsCount = countListItems(listEl);
     this.shownItemsCount = shownItemsCount;
     this.stepSize = listEl.clientWidth;
     this.listWidth = (listEl.clientWidth / shownItemsCount) * this.itemsCount;
-    this.remainderStepSize = (this.stepSize / shownItemsCount) * (this.itemsCount % shownItemsCount);
+    this.remainderStepSize = (this.stepSize / shownItemsCount) * (this.itemsCount % shownItemsCount) || this.stepSize;
     this._listEl = listEl;
+    this._buttons = buttons;
     this._order = new Order(listEl, shownItemsCount);
   }
 
@@ -39,6 +41,22 @@ export class AnimatedList {
     this._order.reorder();
     this.slide(x, 0);
     delayTillNextFrame(() => this.slide(0));
+  }
+
+  public disableBack() {
+    this._buttons[0].setAttribute('hidden', 'true');
+  }
+
+  public enableBack() {
+    this._buttons[0].removeAttribute('hidden');
+  }
+
+  public disableForward() {
+    this._buttons[1].setAttribute('hidden', 'true');
+  }
+
+  public enableForward() {
+    this._buttons[1].removeAttribute('hidden');
   }
 }
 

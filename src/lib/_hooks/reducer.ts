@@ -17,17 +17,20 @@ const reducer = (animatedList: AnimatedList | null, type: ScrollType) => (state:
 
   switch (action) {
     case 'forward': {
+      animatedList.enableBack();
       const endReached = state.shift + animatedList.stepSize >= animatedList.listWidth;
       const endWillBeReached =
         state.shift + animatedList.stepSize + animatedList.remainderStepSize >= animatedList.listWidth;
 
       if (type === 'finite' && endReached) {
+        animatedList.disableForward();
         return state;
       }
 
       if (type === 'finite' && endWillBeReached) {
         const nextShift = state.shift + animatedList.remainderStepSize;
         animatedList.slide(nextShift);
+        animatedList.disableForward();
         return { ...state, shift: nextShift };
       }
 
@@ -42,6 +45,7 @@ const reducer = (animatedList: AnimatedList | null, type: ScrollType) => (state:
       return { ...state, shift: nextShift };
     }
     case 'back': {
+      animatedList.enableForward();
       const startReached = state.shift <= 0;
       const startWillBeReached = state.shift - animatedList.stepSize <= 0;
 
@@ -52,6 +56,7 @@ const reducer = (animatedList: AnimatedList | null, type: ScrollType) => (state:
       if (type === 'finite' && startWillBeReached) {
         const nextShift = 0;
         animatedList.slide(nextShift);
+        animatedList.disableBack();
         return { ...state, shift: nextShift };
       }
 

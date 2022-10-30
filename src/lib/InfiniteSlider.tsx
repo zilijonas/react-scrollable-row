@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowIcon } from '../assets/ArrowIcon';
 import styles from '../styles.module.css';
 import { DEFAULT_ITEMS_PER_RESOLUTION_CONFIG } from './constants';
 import { SlideableProps } from './types';
+import { AnimatedList } from './_hooks/AnimatedList';
+import { resetAsyncTimeouts } from './_hooks/async-utils';
 import { useScroll } from './_hooks/useScroll';
 import { useShownItemsCount } from './_hooks/useShownItemsCount';
 
@@ -25,11 +27,26 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
   const shownItems = useShownItemsCount(config, listWidth);
   const placeholdersCount = placeholderElement ? shownItems.count - items.length : 0;
   const itemWidth = listWidth / shownItems.count - itemsMargin;
-  const scroll = useScroll(shownItems.count, list, looped ? 'infinite' : 'finite');
+  const leftButtonRef = useRef<HTMLDivElement>(null);
+  const rightButtonRef = useRef<HTMLDivElement>(null);
+  const animatedList = useMemo(
+    () =>
+      list && shownItems.count
+        ? new AnimatedList(
+            list,
+            [leftButtonRef.current, rightButtonRef.current].filter(Boolean) as HTMLDivElement[],
+            shownItems.count,
+          )
+        : null,
+    [list, shownItems.count],
+  );
+  const scroll = useScroll(animatedList, looped ? 'infinite' : 'finite');
+
+  useEffect(() => () => resetAsyncTimeouts(), []);
 
   return (
     <div className={styles['container']} style={{ height, minHeight: height, width, maxWidth: width }}>
-      <div className={styles['buttonContainer']}>
+      <div className={styles['buttonContainer']} ref={leftButtonRef}>
         {customButtonLeft ? (
           <span onClick={scroll.back} className={`navButton ${styles['emptyButton']}`} role="button">
             {customButtonLeft}
@@ -69,9 +86,9 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
             ))}
         </ul>
       </div>
-      <div className={styles['buttonContainer']}>
+      <div className={styles['buttonContainer']} ref={rightButtonRef}>
         {customButtonRight ? (
-          <span onClick={scroll.forward} className={`navButton ${styles['emptyButton']}`}>
+          <span onClick={scroll.forward} className={`navButton ${styles['emptyButton']}`} role="button">
             {customButtonRight}
           </span>
         ) : (

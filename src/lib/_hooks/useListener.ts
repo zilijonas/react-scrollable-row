@@ -1,22 +1,25 @@
 import { useLayoutEffect } from 'react';
 
+type ListenerParams<K, L> = {
+  type: K | K[];
+  element?: L | null;
+  disabled?: boolean;
+  fn: VoidFunction;
+};
+
 export const useListener = <K extends keyof WindowEventMap, L extends HTMLElement>(
-  type: K | K[],
-  fn: Function,
+  { type, element, disabled, fn }: ListenerParams<K, L>,
   deps?: React.DependencyList,
-  element?: L | null,
 ) =>
   useLayoutEffect(() => {
-    try {
-      fn();
-      // eslint-disable-next-line no-empty
-    } catch {}
+    if (disabled) return;
+    fn();
     typeof type === 'string'
-      ? (element || window).addEventListener(type, fn as VoidFunction, false)
-      : type.forEach(t => (element || window).addEventListener(t, fn as VoidFunction, false));
+      ? (element || window).addEventListener(type, fn, false)
+      : type.forEach(t => (element || window).addEventListener(t, fn, false));
     return () =>
       typeof type === 'string'
-        ? (element || window).removeEventListener(type, fn as VoidFunction, false)
-        : type.forEach(t => (element || window).removeEventListener(t, fn as VoidFunction, false));
+        ? (element || window).removeEventListener(type, fn, false)
+        : type.forEach(t => (element || window).removeEventListener(t, fn, false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type, ...(deps || [])]);

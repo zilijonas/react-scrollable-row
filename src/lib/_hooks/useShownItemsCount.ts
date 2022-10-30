@@ -4,7 +4,7 @@ import { useListener } from './useListener';
 
 export const useShownItemsCount = (config: ItemsPerScrollWidthConfig, width: number) => {
   const [count, setCount] = useState<number>(countMax(width, config));
-  useListener('resize', () => setCount(countMax(width, config)), [width, resolutions, config]);
+  useListener({ type: 'resize', fn: () => setCount(countMax(width, config)) }, [width, resolutions, config]);
 
   return { count };
 };

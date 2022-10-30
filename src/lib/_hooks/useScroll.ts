@@ -1,16 +1,23 @@
-import { useEffect, useMemo } from 'react';
+import { useLayoutEffect } from 'react';
 import { AnimatedList } from './AnimatedList';
-import { resetAsyncTimeouts, throttle } from './async-utils';
+import { throttle } from './async-utils';
 import { ScrollType, useScrollReducer } from './reducer';
+import { useListener } from './useListener';
 
-export const useScroll = (shownItemsCount: number, listEl: HTMLDivElement | null, type: ScrollType) => {
-  const animatedList = useMemo(
-    () => (listEl && shownItemsCount ? new AnimatedList(listEl, shownItemsCount) : null),
-    [listEl, shownItemsCount],
-  );
+export const useScroll = (animatedList: AnimatedList | null, type: ScrollType) => {
   const [, dispatch] = useScrollReducer(animatedList, type);
 
-  useEffect(() => () => resetAsyncTimeouts(), []);
+  useLayoutEffect(() => {
+    if (!animatedList) return;
+    if (type === 'finite') {
+      animatedList.disableBack();
+    }
+    if (animatedList.itemsCount <= animatedList.shownItemsCount) {
+      animatedList.disableForward();
+    }
+  }, [animatedList, type]);
+
+  useListener({ type: 'resize', fn: () => animatedList?.slide(0) }, [animatedList]);
 
   return {
     forward: () => throttle(() => dispatch('forward')),
