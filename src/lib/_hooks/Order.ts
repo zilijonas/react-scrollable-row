@@ -1,5 +1,3 @@
-import { countListItems, updateListOrder } from './DOM-utils';
-
 export class Order {
   private listEl: HTMLDivElement | null;
   private orderedPositions: number[];
@@ -22,3 +20,12 @@ export class Order {
 }
 
 const divideAtXAndSwap = (x: number, list: number[]) => [...list.slice(x), ...list.slice(0, x)];
+
+const countListItems = (listEl: HTMLDivElement | null) =>
+  Array.from(listEl?.getElementsByTagName('ul')[0].children ?? []).length;
+
+const updateListOrder = (el: HTMLDivElement | null, orderedPositions?: number[]) =>
+  orderedPositions?.forEach((position, index) => {
+    const item = el?.getElementsByTagName('ul')[0].children.item(index) as HTMLDivElement | null;
+    item?.style.setProperty('order', `${position}`);
+  });
