@@ -1,24 +1,28 @@
 import { useLayoutEffect } from 'react';
 
+type ListenerParams<K, L> = {
+  type: K | K[];
+  element?: L | null;
+  disabled?: boolean;
+  runOnInit?: boolean;
+  fn: EventListenerOrEventListenerObject;
+};
+
 export const useListener = <K extends keyof WindowEventMap, L extends HTMLElement>(
-  type: K | K[],
-  fn: Function | boolean | null,
+  { type, element, disabled, runOnInit, fn }: ListenerParams<K, L>,
   deps?: React.DependencyList,
-  element?: L | null,
 ) =>
   useLayoutEffect(() => {
-    if (!fn || typeof fn !== 'function') return;
-    try {
-      fn();
-    } catch {
-      /**/
+    if (disabled) return;
+    if (runOnInit && typeof fn === 'function') {
+      (fn as VoidFunction)();
     }
     typeof type === 'string'
-      ? (element || window).addEventListener(type, fn as VoidFunction, false)
-      : type.forEach(t => (element || window).addEventListener(t, fn as VoidFunction, false));
+      ? (element || window).addEventListener(type, fn, false)
+      : type.forEach(t => (element || window).addEventListener(t, fn, false));
     return () =>
       typeof type === 'string'
-        ? (element || window).removeEventListener(type, fn as VoidFunction, false)
-        : type.forEach(t => (element || window).removeEventListener(t, fn as VoidFunction, false));
+        ? (element || window).removeEventListener(type, fn, false)
+        : type.forEach(t => (element || window).removeEventListener(t, fn, false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type, ...(deps || [])]);

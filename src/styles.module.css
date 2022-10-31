@@ -1,3 +1,5 @@
+[hidden] { display: none !important; }
+
 .container {
   position: relative;
   max-width: 100%;
@@ -6,18 +8,21 @@
   flex-basis: 100%;
   background: transparent;
   box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .scrollableContent {
+  position: absolute;
   height: 100%;
   width: 100%;
   display: flex;
   align-self: center;
   justify-content: center;
   background: transparent;
-  overflow-x: hidden;
   scrollbar-width: none;
   pointer-events: none;
+  transition: left 600ms ease-in-out;
+  left: 0px;
 }
 
 .scrollableContent::-webkit-scrollbar {

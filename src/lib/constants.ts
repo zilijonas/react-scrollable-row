@@ -1,8 +1,10 @@
-import { ItemsPerScrollWidthConfig } from './types';
+import { DisplayConfig } from './types';
 
-export const DEFAULT_ITEMS_PER_RESOLUTION_CONFIG: ItemsPerScrollWidthConfig = {
+export const DEFAULT_DISPLAY_CONFIG: DisplayConfig = {
   480: 2,
   768: 3,
   1200: 4,
   max: 5,
 };
+
+export const DEFAULT_TIME = 600;

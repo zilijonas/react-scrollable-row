@@ -12,7 +12,12 @@ export const WidthControl: React.FC<Props> = ({ width, onWidthChanged }) => {
   return (
     <div className="widthControl">
       <label>List's width in pixels</label>
-      <input type="number" value={width === '100%' ? window.innerWidth : width} onChange={handleWidthChange} />
+      <input
+        type="number"
+        value={width === '100%' ? window.innerWidth : width}
+        placeholder="100%"
+        onChange={handleWidthChange}
+      />
       <div className="widthControlButtons">
         {EXAMPLE_WIDTHS.map(w => (
           <button key={w} onClick={handlePredefinedWidthClick(w)}>

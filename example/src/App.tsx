@@ -8,43 +8,43 @@ import { WidthControl } from './ui/WidthControl';
 const items = [1, 2, 3, 4, 5, 6, 7, 8];
 
 export const App: React.FC = () => {
-  const [width, setWidth] = useState<SlideableProps['width']>(500);
+  const [width, setWidth] = useState<SlideableProps['width']>('100%');
 
   return (
     <div className="pageContainer">
       <h1>React Slideable</h1>
-      <label>8 elements</label>
+      <label>Finite with placeholder</label>
       <div className="listContainer">
         <Slideable
           key={width}
           width={width}
-          itemsMargin={8}
-          items={items.map(item => (
-            <ListItem key={item}>{item}</ListItem>
-          ))}
-        />
-      </div>
-      <label>Swipeable looped 8 elements</label>
-      <div className="listContainer">
-        <Slideable
-          looped
-          swipeable
-          key={width}
-          width={width}
-          itemsMargin={8}
-          items={items.map(item => (
-            <ListItem key={item}>{item}</ListItem>
-          ))}
-        />
-      </div>
-      <label>1 element with a placeholder</label>
-      <div className="listContainer">
-        <Slideable
-          key={width}
-          width={width}
-          placeholderElement={<PlaceholderItem />}
-          itemsMargin={8}
+          placeholder={<PlaceholderItem />}
+          itemsGap={8}
           items={items.slice(0, 1).map(item => (
+            <ListItem key={item}>{item}</ListItem>
+          ))}
+        />
+      </div>
+      <label>Finite swipeable</label>
+      <div className="listContainer">
+        <Slideable
+          key={width}
+          width={width}
+          itemsGap={8}
+          swipeable
+          items={items.map(item => (
+            <ListItem key={item}>{item}</ListItem>
+          ))}
+        />
+      </div>
+      <label>Infinite</label>
+      <div className="listContainer">
+        <Slideable
+          type="infinite"
+          key={width}
+          width={width}
+          itemsGap={8}
+          items={items.map(item => (
             <ListItem key={item}>{item}</ListItem>
           ))}
         />

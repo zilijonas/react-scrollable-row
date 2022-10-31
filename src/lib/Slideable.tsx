@@ -1,46 +1,67 @@
-import React, { useCallback, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowIcon } from '../assets/ArrowIcon';
 import styles from '../styles.module.css';
-import { DEFAULT_ITEMS_PER_RESOLUTION_CONFIG } from './constants';
-import { ContainerElement, ScrollableElement } from './elements';
-import { useSlideable } from './hooks';
+import { resetAsyncTimeouts } from './async';
+import { DEFAULT_DISPLAY_CONFIG } from './constants';
+import { useScroll } from './hooks/useScroll';
+import { useShownItemsCount } from './hooks/useShownItemsCount';
+import { useSwipe } from './hooks/useSwipe';
 import { SlideableProps } from './types';
+import { AnimatedButtons, AnimatedList } from './ui/AnimatedList';
 
-const SlideableComponent: React.FC<SlideableProps> = ({
+const InfiniteSlider: React.FC<SlideableProps> = ({
   items,
+  height,
+  width = '100%',
+  type = 'finite',
   buttonsStyle,
   noButtons = false,
-  looped = false,
   swipeable = false,
-  width = '100%',
-  height = 'auto',
   customButtonLeft,
   customButtonRight,
-  placeholderElement,
-  itemsMargin = 0,
-  config = DEFAULT_ITEMS_PER_RESOLUTION_CONFIG,
+  placeholder,
+  itemsGap = 0,
+  animationTime = 600,
+  displayConfig = DEFAULT_DISPLAY_CONFIG,
+  onScrolled,
 }) => {
-  const [list, setList] = useState<ScrollableElement | null>(null);
-  const [container, setContainer] = useState<ContainerElement | null>(null);
-  const slideable = useSlideable({ list, container, itemsMargin, config, looped, swipeable, noButtons });
-  const placeholdersCount = placeholderElement ? slideable.fittedItemsCount - items.length : 0;
+  const [list, setList] = useState<HTMLDivElement | null>(null);
+  const shownItems = useShownItemsCount(displayConfig, list);
+  const leftButtonRef = useRef<HTMLDivElement>(null);
+  const rightButtonRef = useRef<HTMLDivElement>(null);
+  const animatedList = useMemo(() => {
+    if (!list || !shownItems.count) return null;
+    const buttons = noButtons ? null : ([leftButtonRef.current, rightButtonRef.current] as AnimatedButtons);
+    return new AnimatedList(list, buttons, shownItems.count, itemsGap, animationTime);
+  }, [list, shownItems.count, itemsGap, noButtons, animationTime]);
+  const scroll = useScroll(animatedList, type, animationTime);
+  const placeholdersCount = placeholder ? shownItems.count - items.length : 0;
+  const normalizdedItems = type === 'finite' ? items : normalizeListLength(items, shownItems.count * 2);
+
+  useSwipe(swipeable ? animatedList : null, handleForward, handleBack);
+
+  useEffect(() => () => resetAsyncTimeouts(), []);
 
   return (
     <div
-      ref={useCallback((ref: HTMLDivElement) => setContainer(new ContainerElement(ref)), [])}
       className={styles['container']}
-      style={{ height, width, maxWidth: width }}
+      style={{
+        width,
+        maxWidth: width,
+        height: height ?? animatedList?.itemHeight,
+        minHeight: height ?? animatedList?.itemHeight,
+      }}
     >
-      <div className={styles['buttonContainer']}>
+      <div className={styles['buttonContainer']} ref={leftButtonRef}>
         {customButtonLeft ? (
-          <span onClick={slideable.scrollBack} className={`navButton ${styles['emptyButton']}`}>
+          <span onClick={handleBack} className={`navButton ${styles['emptyButton']}`} role="button">
             {customButtonLeft}
           </span>
         ) : (
           <button
             id="button-back"
             aria-label="Back"
-            onClick={slideable.scrollBack}
+            onClick={handleBack}
             className={`navButton ${styles['emptyButton']} ${styles['button']}`}
             style={buttonsStyle}
           >
@@ -48,34 +69,31 @@ const SlideableComponent: React.FC<SlideableProps> = ({
           </button>
         )}
       </div>
-      <div
-        ref={useCallback((ref: HTMLDivElement) => setList(new ScrollableElement(ref)), [])}
-        className={styles['scrollableContent']}
-      >
-        <ul data-current="0" className={styles['list']}>
-          {items.map((c, idx) => (
-            <li key={idx} className={styles['listItem']} style={{ marginRight: `${itemsMargin}px` }}>
-              {c}
+      <div className={styles['scrollableContent']} ref={setList}>
+        <ul className={styles['list']}>
+          {normalizdedItems.map((item, index) => (
+            <li key={index} className={styles['listItem']} style={{ marginRight: `${itemsGap}px` }}>
+              {item}
             </li>
           ))}
           {placeholdersCount > 0 &&
-            Array.from(Array(placeholdersCount).keys()).map(k => (
-              <li key={k} className={styles['listItem']} style={{ marginRight: `${itemsMargin}px` }}>
-                {placeholderElement}
+            Array.from(Array(placeholdersCount).keys()).map(key => (
+              <li key={key} className={styles['listItem']} style={{ marginRight: `${itemsGap}px` }}>
+                {placeholder}
               </li>
             ))}
         </ul>
       </div>
-      <div className={styles['buttonContainer']}>
+      <div className={styles['buttonContainer']} ref={rightButtonRef}>
         {customButtonRight ? (
-          <span onClick={slideable.scrollForward} className={`navButton ${styles['emptyButton']}`}>
+          <span onClick={handleForward} className={`navButton ${styles['emptyButton']}`} role="button">
             {customButtonRight}
           </span>
         ) : (
           <button
             id="button-right"
             aria-label="Forward"
-            onClick={slideable.scrollForward}
+            onClick={handleForward}
             className={`navButton ${styles['emptyButton']} ${styles['button']}`}
             style={buttonsStyle}
           >
@@ -85,6 +103,23 @@ const SlideableComponent: React.FC<SlideableProps> = ({
       </div>
     </div>
   );
+
+  function handleForward() {
+    scroll.forward();
+    onScrolled?.('forward');
+  }
+
+  function handleBack() {
+    scroll.back();
+    onScrolled?.('back');
+  }
 };
 
-export const Slideable = React.memo(SlideableComponent);
+function normalizeListLength<T>(list: T[], min: number): T[] {
+  if (list.length < min) {
+    return normalizeListLength([...list, ...list], min);
+  }
+  return list;
+}
+
+export const Slideable = React.memo(InfiniteSlider);
