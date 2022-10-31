@@ -73,6 +73,8 @@ const Example = () => (
     customButtonLeft={<div>Scroll Left</div>}
     // Custom button for scroll to right.
     customButtonRight={<div>Scroll Right</div>}
+    // Callback function that will be called when the list is scrolled.
+    onScrolled={direction => console.log(direction)}
   />
 );
 ```

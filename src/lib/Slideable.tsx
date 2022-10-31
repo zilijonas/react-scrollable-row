@@ -22,7 +22,7 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
   placeholder,
   itemsGap = 0,
   displayConfig = DEFAULT_DISPLAY_CONFIG,
-  onSlide,
+  onScrolled,
 }) => {
   const [list, setList] = useState<HTMLDivElement | null>(null);
   const shownItems = useShownItemsCount(displayConfig, list);
@@ -35,6 +35,7 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
   }, [list, shownItems.count, itemsGap, noButtons]);
   const scroll = useScroll(animatedList, type);
   const placeholdersCount = placeholder ? shownItems.count - items.length : 0;
+  const normalizdedItems = type === 'finite' ? items : normalizeListLength(items, shownItems.count * 2);
 
   useSwipe(swipeable ? animatedList : null, handleForward, handleBack);
 
@@ -69,7 +70,7 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
       </div>
       <div className={styles['scrollableContent']} ref={setList}>
         <ul className={styles['list']}>
-          {normalizeListLength(items, shownItems.count * 2).map((item, index) => (
+          {normalizdedItems.map((item, index) => (
             <li key={index} className={styles['listItem']} style={{ marginRight: `${itemsGap}px` }}>
               {item}
             </li>
@@ -104,12 +105,12 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
 
   function handleForward() {
     scroll.forward();
-    onSlide?.('forward');
+    onScrolled?.('forward');
   }
 
   function handleBack() {
     scroll.back();
-    onSlide?.('back');
+    onScrolled?.('back');
   }
 };
 

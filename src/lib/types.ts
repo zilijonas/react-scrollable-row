@@ -62,7 +62,7 @@ export interface SlideableProps {
    */
   displayConfig?: DisplayConfig;
   /**
-   *
+   * Callback function that will be called when the list is scrolled.
    */
-  onSlide?: (direction: SlideDirection) => void;
+  onScrolled?: (direction: SlideDirection) => void;
 }
