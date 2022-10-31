@@ -21,6 +21,8 @@ const reducer = (animatedList: AnimatedList | null, type: SlideType) => (state: 
       const endReached = state.shift + animatedList.stepSize >= animatedList.listWidth;
       const endWillBeReached =
         state.shift + animatedList.stepSize + animatedList.remainderStepSize >= animatedList.listWidth;
+      const preEndWillBeReached =
+        state.shift + animatedList.stepSize * 2 + animatedList.remainderStepSize >= animatedList.listWidth;
 
       if (type === 'finite' && endReached) {
         animatedList.disableForward();
@@ -34,8 +36,8 @@ const reducer = (animatedList: AnimatedList | null, type: SlideType) => (state: 
         return { ...state, shift: nextShift };
       }
 
-      if (type === 'infinite' && endWillBeReached) {
-        const nextShift = state.shift + animatedList.remainderStepSize;
+      if (type === 'infinite' && preEndWillBeReached) {
+        const nextShift = state.shift + animatedList.stepSize;
         animatedList.slideAndSwapForward(nextShift);
         return { ...state, shift: 0 };
       }

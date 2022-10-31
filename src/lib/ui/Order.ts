@@ -1,25 +1,25 @@
 import { delayTillNextFrame } from '../async';
 
 export class Order {
-  private listEl: HTMLDivElement | null;
-  private orderedPositions: number[];
-  private locked: number;
+  private _listEl: HTMLDivElement | null;
+  private _orderedPositions: number[];
+  private _locked: number;
 
   constructor(listEl: HTMLDivElement | null, locked: number) {
-    this.listEl = listEl;
-    this.locked = locked;
+    this._listEl = listEl;
+    this._locked = locked;
     delayTillNextFrame(() => {
-      this.orderedPositions = Array.from(Array(countListItems(listEl)).keys());
+      this._orderedPositions = Array.from(Array(countListItems(listEl)).keys());
     });
   }
 
   get current() {
-    return this.orderedPositions;
+    return this._orderedPositions;
   }
 
-  reorder() {
-    this.orderedPositions = divideAtXAndSwap(this.locked, this.orderedPositions);
-    updateListOrder(this.listEl, this.orderedPositions);
+  reorder(slicePositionShift: number = 0) {
+    this._orderedPositions = divideAtXAndSwap(this._locked + slicePositionShift, this._orderedPositions);
+    updateListOrder(this._listEl, this._orderedPositions);
   }
 }
 

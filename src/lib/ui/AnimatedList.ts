@@ -58,7 +58,7 @@ export class AnimatedList {
   public slideAndSwapForward(x: number) {
     this.slide(x);
     delay(() => {
-      this._order.reorder();
+      this._order.reorder(this.length % this.shownItemsCount);
       this.slide(0, 0);
     }, this._animationTime);
   }
