@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowIcon } from '../assets/ArrowIcon';
 import styles from '../styles.module.css';
 import { resetAsyncTimeouts } from './async';
-import { DEFAULT_ITEMS_PER_RESOLUTION_CONFIG } from './constants';
+import { DEFAULT_DISPLAY_CONFIG } from './constants';
 import { useScroll } from './hooks/useScroll';
 import { useShownItemsCount } from './hooks/useShownItemsCount';
 import { useSwipe } from './hooks/useSwipe';
@@ -13,29 +13,30 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
   items,
   height,
   width = '100%',
+  type = 'finite',
   buttonsStyle,
-  looped = false,
   noButtons = false,
   swipeable = false,
   customButtonLeft,
   customButtonRight,
   placeholderElement,
-  itemsMargin = 0,
-  config = DEFAULT_ITEMS_PER_RESOLUTION_CONFIG,
+  itemsGap = 0,
+  displayConfig = DEFAULT_DISPLAY_CONFIG,
+  onSlide,
 }) => {
   const [list, setList] = useState<HTMLDivElement | null>(null);
-  const shownItems = useShownItemsCount(config, list);
+  const shownItems = useShownItemsCount(displayConfig, list);
   const leftButtonRef = useRef<HTMLDivElement>(null);
   const rightButtonRef = useRef<HTMLDivElement>(null);
   const animatedList = useMemo(() => {
     if (!list || !shownItems.count) return null;
     const buttons = noButtons ? null : ([leftButtonRef.current, rightButtonRef.current] as AnimatedButtons);
-    return new AnimatedList(list, buttons, shownItems.count, itemsMargin);
-  }, [list, shownItems.count, itemsMargin, noButtons]);
-  const scroll = useScroll(animatedList, looped ? 'infinite' : 'finite');
+    return new AnimatedList(list, buttons, shownItems.count, itemsGap);
+  }, [list, shownItems.count, itemsGap, noButtons]);
+  const scroll = useScroll(animatedList, type);
   const placeholdersCount = placeholderElement ? shownItems.count - items.length : 0;
 
-  useSwipe(swipeable ? animatedList : null, scroll.forward, scroll.back);
+  useSwipe(swipeable ? animatedList : null, handleForward, handleBack);
 
   useEffect(() => () => resetAsyncTimeouts(), []);
 
@@ -51,14 +52,14 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
     >
       <div className={styles['buttonContainer']} ref={leftButtonRef}>
         {customButtonLeft ? (
-          <span onClick={scroll.back} className={`navButton ${styles['emptyButton']}`} role="button">
+          <span onClick={handleBack} className={`navButton ${styles['emptyButton']}`} role="button">
             {customButtonLeft}
           </span>
         ) : (
           <button
             id="button-back"
             aria-label="Back"
-            onClick={scroll.back}
+            onClick={handleBack}
             className={`navButton ${styles['emptyButton']} ${styles['button']}`}
             style={buttonsStyle}
           >
@@ -69,13 +70,13 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
       <div className={styles['scrollableContent']} ref={setList}>
         <ul className={styles['list']}>
           {items.map(item => (
-            <li key={item.key} className={styles['listItem']} style={{ marginRight: `${itemsMargin}px` }}>
+            <li key={item.key} className={styles['listItem']} style={{ marginRight: `${itemsGap}px` }}>
               {item}
             </li>
           ))}
           {placeholdersCount > 0 &&
             Array.from(Array(placeholdersCount).keys()).map(key => (
-              <li key={key} className={styles['listItem']} style={{ marginRight: `${itemsMargin}px` }}>
+              <li key={key} className={styles['listItem']} style={{ marginRight: `${itemsGap}px` }}>
                 {placeholderElement}
               </li>
             ))}
@@ -83,14 +84,14 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
       </div>
       <div className={styles['buttonContainer']} ref={rightButtonRef}>
         {customButtonRight ? (
-          <span onClick={scroll.forward} className={`navButton ${styles['emptyButton']}`} role="button">
+          <span onClick={handleForward} className={`navButton ${styles['emptyButton']}`} role="button">
             {customButtonRight}
           </span>
         ) : (
           <button
             id="button-right"
             aria-label="Forward"
-            onClick={scroll.forward}
+            onClick={handleForward}
             className={`navButton ${styles['emptyButton']} ${styles['button']}`}
             style={buttonsStyle}
           >
@@ -100,6 +101,16 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
       </div>
     </div>
   );
+
+  function handleForward() {
+    scroll.forward();
+    onSlide?.('forward');
+  }
+
+  function handleBack() {
+    scroll.back();
+    onSlide?.('back');
+  }
 };
 
 export const Slideable = React.memo(InfiniteSlider, (_prevProps, _nextProps) => true);

@@ -1,15 +1,15 @@
 import { useState } from 'react';
-import { ItemsPerScrollWidthConfig } from '../types';
+import { DisplayConfig } from '../types';
 import { useListener } from './useListener';
 
-export const useShownItemsCount = (config: ItemsPerScrollWidthConfig, list: HTMLDivElement | null) => {
-  const [count, setCount] = useState<number>(0);
+export const useShownItemsCount = (config: DisplayConfig, list: HTMLDivElement | null) => {
+  const [count, setCount] = useState<number>(typeof config === 'number' ? config : 0);
 
   useListener(
     {
       type: 'resize',
       fn: () => setCount(countMax(list!.clientWidth, config)),
-      disabled: !list,
+      disabled: !list || typeof config === 'number',
       runOnInit: true,
     },
     [list, resolutions, config],
@@ -18,10 +18,10 @@ export const useShownItemsCount = (config: ItemsPerScrollWidthConfig, list: HTML
   return { count };
 };
 
-const countMax = (width: number, config: ItemsPerScrollWidthConfig) =>
+const countMax = (width: number, config: DisplayConfig) =>
   width ? config[resolutions(config).find(r => width <= r) ?? 'max'] : 0;
 
-const resolutions = (config: ItemsPerScrollWidthConfig) =>
+const resolutions = (config: DisplayConfig) =>
   Object.keys(config)
     .filter(Number)
     .map(Number)

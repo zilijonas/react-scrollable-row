@@ -25,51 +25,56 @@ yarn add react-slideable
 ## Usage
 
 ```tsx
-import { Slideable, ItemsPerScrollWidthConfig } from 'react-slideable';
+import { Slideable, DisplayConfig } from 'react-slideable';
 import 'react-slideable/dist/index.css';
 
-const CONFIG: ItemsPerScrollWidthConfig = {
-  480: 2,
-  768: 3,
-  1200: 4,
-  max: 5,
-};
-
-const Example = () => {
-  return (
-    <Slideable
-      // Height of the list. Optional. Defaults to `auto`.
-      height={200}
-      // Width of the list. Optional. Defaults to `100%`.
-      width={500}
-      // Makes the list infinite by cloning the items of the list. Optional. Defaults to `false`.
-      looped={true}
-      // Enables scroll by swipe. Defaults to `false`.
-      swipeable={true}
-      // Removes scroll buttons. Defaults to `false`.
-      noButtons={true}
-      // Margin between list items. Optional. Defaults to `0`.
-      itemsMargin={8}
-      // You can set how many items will list display at given resolutions. Optional. Defaults to the `CONFIG` values above.
-      config={CONFIG}
-      // Style of the arrow buttons. Optional.
-      buttonsStyle={{ background: '#777' }}
-      // JSX Element to display when `looped` is set to `false` and there are less items in the list than in the configuration for the current scroll width.
-      // In order for dynamic items sizing to work, placeholder's width must be `100%`. Optional.
-      placeholderElement={<span style={{ width: '100%' }}>Placeholder</span>}
-      // Array of your list items. In order for dynamic items sizing to work, all items width must be set to `100%`. Required.
-      items={items.map(item => (
-        <div key={item} style={{ width: '100%' }}>
-          {item}
-        </div>
-      ))}
-      // Custom button for scroll to left. Optional.
-      customButtonLeft={<div>Scroll Left</div>}
-      // Custom button for scroll to right. Optional.
-      customButtonRight={<div>Scroll Right</div>}
-    />
-  );
-};
+const Example = () => (
+  <Slideable
+    // Array of your list items.
+    // Items width must be set to `100%`.
+    // Required.
+    items={items.map(item => (
+      <div key={item} style={{ width: '100%' }}>
+        {item}
+      </div>
+    ))}
+    // JSX Element to display for `finite` list
+    // when items < number of displayed items by config.
+    // Placeholder's width must be `100%`.
+    // By default empty space is displayed.
+    placeholderElement={<span style={{ width: '100%' }}>Placeholder</span>}
+    // Type of the list. Available options: `finite` | `infinite`.
+    // Default is `finite`.
+    type="infinite"
+    // Enables scroll by swipe.
+    // Defaults to `false`.
+    swipeable={true}
+    // Height of the list.
+    // Defaults to items height.
+    height={200}
+    // Width of the list.
+    // Defaults to `100%`.
+    width={500}
+    // Enables scroll by swipe.
+    // Defaults to `false`.
+    swipeable={true}
+    // Removes scroll buttons.
+    // Defaults to `false`.
+    noButtons={true}
+    // Gap between list items.
+    // Defaults to `0`.
+    itemsGap={8}
+    // You can set how many items will list display at given resolutions.
+    // Defaults to the current value.
+    displayConfig={{ 480: 2, 768: 3, 1200: 4, max: 5 }}
+    // Style of the arrow buttons.
+    buttonsStyle={{ background: '#777' }}
+    // Custom button for scroll to left.
+    customButtonLeft={<div>Scroll Left</div>}
+    // Custom button for scroll to right.
+    customButtonRight={<div>Scroll Right</div>}
+  />
+);
 ```
 
 ## License

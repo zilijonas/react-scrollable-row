@@ -1,2 +1,2 @@
 export { Slideable } from './Slideable';
-export { ItemsPerScrollWidthConfig, SlideableProps } from './types';
+export { DisplayConfig, SlideableProps, SlideDirection, SlideType } from './types';

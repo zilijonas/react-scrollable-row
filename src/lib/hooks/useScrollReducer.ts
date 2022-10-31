@@ -1,16 +1,16 @@
 import { useReducer } from 'react';
+import { SlideType } from '../types';
 import { AnimatedList } from '../ui/AnimatedList';
 
 type State = { shift: number };
-type Action = 'forward' | 'back' | 'reset';
-export type ScrollType = 'infinite' | 'finite';
+type Action = 'forward' | 'back';
 
 const DEFAULT_STATE: State = { shift: 0 };
 
-export const useScrollReducer = (animatedList: AnimatedList | null, type: ScrollType) =>
+export const useScrollReducer = (animatedList: AnimatedList | null, type: SlideType) =>
   useReducer(reducer(animatedList, type), DEFAULT_STATE);
 
-const reducer = (animatedList: AnimatedList | null, type: ScrollType) => (state: State, action: Action) => {
+const reducer = (animatedList: AnimatedList | null, type: SlideType) => (state: State, action: Action) => {
   if (!animatedList) {
     return state;
   }

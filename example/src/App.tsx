@@ -18,7 +18,7 @@ export const App: React.FC = () => {
         <Slideable
           key={width}
           width={width}
-          itemsMargin={8}
+          itemsGap={8}
           items={items.map(item => (
             <ListItem key={item}>{item}</ListItem>
           ))}
@@ -27,11 +27,11 @@ export const App: React.FC = () => {
       <label>Swipeable looped 8 elements</label>
       <div className="listContainer">
         <Slideable
-          looped
+          type="infinite"
           swipeable
           key={width}
           width={width}
-          itemsMargin={8}
+          itemsGap={8}
           items={items.map(item => (
             <ListItem key={item}>{item}</ListItem>
           ))}
@@ -43,7 +43,7 @@ export const App: React.FC = () => {
           key={width}
           width={width}
           placeholderElement={<PlaceholderItem />}
-          itemsMargin={8}
+          itemsGap={8}
           items={items.slice(0, 1).map(item => (
             <ListItem key={item}>{item}</ListItem>
           ))}

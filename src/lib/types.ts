@@ -2,39 +2,40 @@
  * You can set how many items will list display at given resolutions.
  * Default values:
  * `{ 480: 2, 768: 3, 1200: 4, max: 5 }`
- * Max stands for all resolutions that are bigger than the last of your defined ones (in this case >1500).
+ * `max` is for resolutions higher than `1200`.
  * */
-export type ItemsPerScrollWidthConfig = { [pixels: number]: number } & { max: number };
+export type DisplayConfig = ({ [pixels: number]: number } & { max: number }) | number;
+
+export type SlideDirection = 'forward' | 'back';
+
+export type SlideType = 'finite' | 'infinite';
 
 export interface SlideableProps {
   /**
-   * Array of your list items. In order for dynamic items sizing to work, all items width must be set to `100%`.
+   * Type of the list. Available options: `finite` | `infinite`. Default is `finite`.
+   */
+  type?: SlideType;
+  /**
+   * Enables scroll by swipe.
+   */
+  swipeable?: boolean;
+  /**
+   * Array of your list items. In order for dynamic items sizing to work,
+   * all items style property `width` must be set to `100%`.
    */
   items: JSX.Element[];
   /**
-   * Height of the list. Defaults to items height if undefined.
+   * Margin between list items, px. Defaults to 0.
+   */
+  itemsGap?: number;
+  /**
+   * Height of the list. Defaults to items height.
    */
   height?: number;
   /**
    * Width of the list. Defaults to `100%`.
    */
   width?: number | '100%';
-  /**
-   * You can set how many items will list display at given resolutions.
-   */
-  config?: ItemsPerScrollWidthConfig;
-  /**
-   * Margin between list items, px.
-   */
-  itemsMargin?: number;
-  /**
-   * Makes the list infinite by cloning the items of the list.
-   */
-  looped?: boolean;
-  /**
-   * Enables scroll by swipe.
-   */
-  swipeable?: boolean;
   /**
    * Removes scroll buttons.
    */
@@ -56,4 +57,12 @@ export interface SlideableProps {
    * Custom button for scroll to right.
    */
   customButtonRight?: JSX.Element;
+  /**
+   * You can set how many items will list display at given resolutions.
+   */
+  displayConfig?: DisplayConfig;
+  /**
+   *
+   */
+  onSlide?: (direction: SlideDirection) => void;
 }
