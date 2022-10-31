@@ -69,8 +69,8 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
       </div>
       <div className={styles['scrollableContent']} ref={setList}>
         <ul className={styles['list']}>
-          {items.map(item => (
-            <li key={item.key} className={styles['listItem']} style={{ marginRight: `${itemsGap}px` }}>
+          {normalizeListLength(items, shownItems.count * 2).map((item, index) => (
+            <li key={index} className={styles['listItem']} style={{ marginRight: `${itemsGap}px` }}>
               {item}
             </li>
           ))}
@@ -114,3 +114,10 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
 };
 
 export const Slideable = React.memo(InfiniteSlider, (_prevProps, _nextProps) => true);
+
+function normalizeListLength<T>(list: T[], min: number): T[] {
+  if (list.length < min) {
+    return normalizeListLength([...list, ...list], min);
+  }
+  return list;
+}

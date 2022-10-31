@@ -1,3 +1,5 @@
+import { delayTillNextFrame } from '../async';
+
 export class Order {
   private listEl: HTMLDivElement | null;
   private orderedPositions: number[];
@@ -6,7 +8,9 @@ export class Order {
   constructor(listEl: HTMLDivElement | null, locked: number) {
     this.listEl = listEl;
     this.locked = locked;
-    this.orderedPositions = Array.from(Array(countListItems(listEl)).keys());
+    delayTillNextFrame(() => {
+      this.orderedPositions = Array.from(Array(countListItems(listEl)).keys());
+    });
   }
 
   get current() {
@@ -21,8 +25,7 @@ export class Order {
 
 const divideAtXAndSwap = (x: number, list: number[]) => [...list.slice(x), ...list.slice(0, x)];
 
-const countListItems = (listEl: HTMLDivElement | null) =>
-  Array.from(listEl?.getElementsByTagName('ul')[0].children ?? []).length;
+const countListItems = (listEl: HTMLDivElement | null) => listEl?.getElementsByTagName('ul')[0].children.length ?? 0;
 
 const updateListOrder = (el: HTMLDivElement | null, orderedPositions?: number[]) =>
   orderedPositions?.forEach((position, index) => {
