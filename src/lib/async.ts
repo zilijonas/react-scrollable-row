@@ -1,4 +1,4 @@
-import { DEFAULT_TIME } from '../constants';
+import { DEFAULT_TIME } from './constants';
 
 let timeouts: NodeJS.Timeout[] = [];
 let isThrottled = false;

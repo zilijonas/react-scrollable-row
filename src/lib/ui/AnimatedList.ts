@@ -1,17 +1,17 @@
+import { delay, delayTillNextFrame } from '../async';
 import { DEFAULT_TIME } from '../constants';
-import { delay, delayTillNextFrame } from './async-utils';
 import { Order } from './Order';
 
-export type AnimatedButtons = [HTMLDivElement, HTMLDivElement];
+export type AnimatedButtons = [HTMLDivElement, HTMLDivElement] | null;
 
 export class AnimatedList {
   public shownItemsCount: number;
   public element: HTMLDivElement;
   private _order: Order;
-  private _buttons: HTMLDivElement[];
   private _itemMargin: number;
+  private _buttons: AnimatedButtons | null;
 
-  constructor(listEl: HTMLDivElement, buttons: AnimatedButtons, shownItemsCount: number, itemMargin: number) {
+  constructor(listEl: HTMLDivElement, buttons: AnimatedButtons | null, shownItemsCount: number, itemMargin: number) {
     this.shownItemsCount = shownItemsCount;
     this.element = listEl;
     this._buttons = buttons;
@@ -25,6 +25,10 @@ export class AnimatedList {
 
   get itemWidth() {
     return this.element.clientWidth / this.shownItemsCount - this._itemMargin;
+  }
+
+  get itemHeight() {
+    return this.element.getElementsByTagName('ul')[0].children.item(0)?.clientHeight ?? 0;
   }
 
   get listWidth() {
@@ -59,19 +63,19 @@ export class AnimatedList {
   }
 
   public disableBack() {
-    this._buttons[0].setAttribute('hidden', 'true');
+    this._buttons?.[0].setAttribute('hidden', 'true');
   }
 
   public enableBack() {
-    this._buttons[0].removeAttribute('hidden');
+    this._buttons?.[0].removeAttribute('hidden');
   }
 
   public disableForward() {
-    this._buttons[1].setAttribute('hidden', 'true');
+    this._buttons?.[1].setAttribute('hidden', 'true');
   }
 
   public enableForward() {
-    this._buttons[1].removeAttribute('hidden');
+    this._buttons?.[1].removeAttribute('hidden');
   }
 
   public updateItemsWidth() {

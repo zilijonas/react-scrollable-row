@@ -1,41 +1,36 @@
 import { useRef } from 'react';
-import { ScrollableElement } from '../elements';
+import { AnimatedList } from '../ui/AnimatedList';
 import { useListener } from './useListener';
 
-export type ItemsPerScrollWidthConfig = { [pixels: number]: number } & { max: number };
-
-interface Props {
-  list: ScrollableElement | null;
-  margin: number;
-  fitCount: number;
-  swipeable: boolean;
-}
-
-export const useSwipe = ({ list, margin, fitCount, swipeable }: Props) => {
+export const useSwipe = (animatedList: AnimatedList | null, forward: VoidFunction, back: VoidFunction) => {
   const screenX = useRef<number>();
+
   useListener(
-    ['mousedown', 'touchstart'],
-    list &&
-      swipeable &&
-      ((event: MouseEvent | TouchEvent) =>
-        (screenX.current = event instanceof MouseEvent ? event.screenX : event.touches[0]?.clientX)),
-    [swipeable, fitCount, list, margin],
-    list?.element,
+    {
+      type: ['mousedown', 'touchstart'],
+      fn: (event: MouseEvent | TouchEvent) => {
+        screenX.current = event instanceof MouseEvent ? event.screenX : event.touches[0]?.clientX;
+      },
+      element: animatedList?.element,
+      disabled: !animatedList,
+    },
+    [animatedList],
   );
   useListener(
-    ['mouseup', 'touchend'],
-    list &&
-      swipeable &&
-      ((event: MouseEvent | TouchEvent) => {
+    {
+      type: ['mouseup', 'touchend'],
+      fn: (event: MouseEvent | TouchEvent) => {
         const lastScreenX = event instanceof MouseEvent ? event.screenX : event.changedTouches[0]?.clientX;
         if (screenX.current === null || screenX.current === undefined || lastScreenX === undefined) return;
 
         const difference = screenX.current - lastScreenX;
-        difference > 0 && list.scrollForward(margin, fitCount);
-        difference < 0 && list.scrollBack(margin);
+        difference > 0 && forward();
+        difference < 0 && back();
         screenX.current = undefined;
-      }),
-    [swipeable, fitCount, list, margin],
-    list?.element,
+      },
+      element: animatedList?.element,
+      disabled: !animatedList,
+    },
+    [animatedList],
   );
 };

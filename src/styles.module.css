@@ -45,12 +45,6 @@
   padding-right: 0;
 }
 
-.listItem2 {
-  /* position: absolute; */
-  padding-left: 0;
-  padding-right: 0;
-}
-
 .emptyButton {
   height: 100%;
   display: flex;

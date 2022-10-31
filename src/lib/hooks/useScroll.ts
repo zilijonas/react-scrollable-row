@@ -1,8 +1,8 @@
 import { useLayoutEffect } from 'react';
-import { AnimatedList } from './AnimatedList';
-import { throttle } from './async-utils';
-import { ScrollType, useScrollReducer } from './reducer';
+import { throttle } from '../async';
+import { AnimatedList } from '../ui/AnimatedList';
 import { useListener } from './useListener';
+import { ScrollType, useScrollReducer } from './useScrollReducer';
 
 export const useScroll = (animatedList: AnimatedList | null, type: ScrollType) => {
   const [, dispatch] = useScrollReducer(animatedList, type);

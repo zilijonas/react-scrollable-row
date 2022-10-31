@@ -1,5 +1,5 @@
 import { useReducer } from 'react';
-import { AnimatedList } from './AnimatedList';
+import { AnimatedList } from '../ui/AnimatedList';
 
 type State = { shift: number };
 type Action = 'forward' | 'back' | 'reset';
