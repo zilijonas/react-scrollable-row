@@ -1,5 +1,4 @@
 import { delay, delayTillNextFrame } from '../async';
-import { DEFAULT_TIME } from '../constants';
 import { Order } from './Order';
 
 export type AnimatedButtons = [HTMLDivElement, HTMLDivElement] | null;
@@ -10,12 +9,20 @@ export class AnimatedList {
   private _order: Order;
   private _itemMargin: number;
   private _buttons: AnimatedButtons | null;
+  private _animationTime: number;
 
-  constructor(listEl: HTMLDivElement, buttons: AnimatedButtons | null, shownItemsCount: number, itemMargin: number) {
+  constructor(
+    listEl: HTMLDivElement,
+    buttons: AnimatedButtons | null,
+    shownItemsCount: number,
+    itemMargin: number,
+    animationTime: number,
+  ) {
     this.shownItemsCount = shownItemsCount;
     this.element = listEl;
     this._buttons = buttons;
     this._itemMargin = itemMargin;
+    this._animationTime = animationTime;
     this._order = new Order(listEl, shownItemsCount);
   }
 
@@ -43,8 +50,8 @@ export class AnimatedList {
     return (this.stepSize / this.shownItemsCount) * (this.length % this.shownItemsCount) || this.stepSize;
   }
 
-  public slide(x: number, time: number = DEFAULT_TIME) {
-    updateListAnimationTime(this.element, time);
+  public slide(x: number, time?: number) {
+    updateListAnimationTime(this.element, time ?? this._animationTime);
     updateListPosition(this.element, x);
   }
 
@@ -53,7 +60,7 @@ export class AnimatedList {
     delay(() => {
       this._order.reorder();
       this.slide(0, 0);
-    });
+    }, this._animationTime);
   }
 
   public slideAndSwapBack(x: number) {

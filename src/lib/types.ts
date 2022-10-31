@@ -62,6 +62,10 @@ export interface SlideableProps {
    */
   displayConfig?: DisplayConfig;
   /**
+   * Time of the slide animation, ms. Defaults to 600.
+   */
+  animationTime?: number;
+  /**
    * Callback function that will be called when the list is scrolled.
    */
   onScrolled?: (direction: SlideDirection) => void;

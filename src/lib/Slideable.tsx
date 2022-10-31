@@ -21,6 +21,7 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
   customButtonRight,
   placeholder,
   itemsGap = 0,
+  animationTime = 600,
   displayConfig = DEFAULT_DISPLAY_CONFIG,
   onScrolled,
 }) => {
@@ -31,9 +32,9 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
   const animatedList = useMemo(() => {
     if (!list || !shownItems.count) return null;
     const buttons = noButtons ? null : ([leftButtonRef.current, rightButtonRef.current] as AnimatedButtons);
-    return new AnimatedList(list, buttons, shownItems.count, itemsGap);
-  }, [list, shownItems.count, itemsGap, noButtons]);
-  const scroll = useScroll(animatedList, type);
+    return new AnimatedList(list, buttons, shownItems.count, itemsGap, animationTime);
+  }, [list, shownItems.count, itemsGap, noButtons, animationTime]);
+  const scroll = useScroll(animatedList, type, animationTime);
   const placeholdersCount = placeholder ? shownItems.count - items.length : 0;
   const normalizdedItems = type === 'finite' ? items : normalizeListLength(items, shownItems.count * 2);
 
@@ -114,11 +115,11 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
   }
 };
 
-export const Slideable = React.memo(InfiniteSlider, (_prevProps, _nextProps) => true);
-
 function normalizeListLength<T>(list: T[], min: number): T[] {
   if (list.length < min) {
     return normalizeListLength([...list, ...list], min);
   }
   return list;
 }
+
+export const Slideable = React.memo(InfiniteSlider);

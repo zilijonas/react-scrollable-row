@@ -5,7 +5,7 @@ import { AnimatedList } from '../ui/AnimatedList';
 import { useListener } from './useListener';
 import { useScrollReducer } from './useScrollReducer';
 
-export const useScroll = (animatedList: AnimatedList | null, type: SlideType) => {
+export const useScroll = (animatedList: AnimatedList | null, type: SlideType, animationTime: number) => {
   const [, dispatch] = useScrollReducer(animatedList, type);
 
   useLayoutEffect(() => {
@@ -34,7 +34,7 @@ export const useScroll = (animatedList: AnimatedList | null, type: SlideType) =>
   );
 
   return {
-    forward: () => throttle(() => dispatch('forward')),
-    back: () => throttle(() => dispatch('back')),
+    forward: () => throttle(() => dispatch('forward'), animationTime),
+    back: () => throttle(() => dispatch('back'), animationTime),
   };
 };
