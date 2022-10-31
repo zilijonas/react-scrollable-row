@@ -11,12 +11,12 @@ import { AnimatedButtons, AnimatedList } from './ui/AnimatedList';
 
 const InfiniteSlider: React.FC<SlideableProps> = ({
   items,
+  height,
+  width = '100%',
   buttonsStyle,
   looped = false,
   noButtons = false,
   swipeable = false,
-  width = '100%',
-  height = 'auto',
   customButtonLeft,
   customButtonRight,
   placeholderElement,
@@ -39,16 +39,14 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
 
   useEffect(() => () => resetAsyncTimeouts(), []);
 
-  const calcHeight = height === 'auto' ? animatedList?.itemHeight : 'auto';
-
   return (
     <div
       className={styles['container']}
       style={{
-        height: calcHeight,
-        minHeight: calcHeight,
         width,
         maxWidth: width,
+        height: height ?? animatedList?.itemHeight,
+        minHeight: height ?? animatedList?.itemHeight,
       }}
     >
       <div className={styles['buttonContainer']} ref={leftButtonRef}>

@@ -12,9 +12,9 @@ export interface SlideableProps {
    */
   items: JSX.Element[];
   /**
-   * Height of the list. Defaults to `auto`.
+   * Height of the list. Defaults to items height if undefined.
    */
-  height?: number | 'auto';
+  height?: number;
   /**
    * Width of the list. Defaults to `100%`.
    */
