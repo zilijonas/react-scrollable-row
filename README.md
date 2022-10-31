@@ -42,7 +42,7 @@ const Example = () => (
     // when items < number of displayed items by config.
     // Placeholder's width must be `100%`.
     // By default empty space is displayed.
-    placeholderElement={<span style={{ width: '100%' }}>Placeholder</span>}
+    placeholder={<span style={{ width: '100%' }}>Placeholder</span>}
     // Type of the list. Available options: `finite` | `infinite`.
     // Default is `finite`.
     type="infinite"

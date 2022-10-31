@@ -42,7 +42,7 @@ export const App: React.FC = () => {
         <Slideable
           key={width}
           width={width}
-          placeholderElement={<PlaceholderItem />}
+          placeholder={<PlaceholderItem />}
           itemsGap={8}
           items={items.slice(0, 1).map(item => (
             <ListItem key={item}>{item}</ListItem>

@@ -19,7 +19,7 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
   swipeable = false,
   customButtonLeft,
   customButtonRight,
-  placeholderElement,
+  placeholder,
   itemsGap = 0,
   displayConfig = DEFAULT_DISPLAY_CONFIG,
   onSlide,
@@ -34,7 +34,7 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
     return new AnimatedList(list, buttons, shownItems.count, itemsGap);
   }, [list, shownItems.count, itemsGap, noButtons]);
   const scroll = useScroll(animatedList, type);
-  const placeholdersCount = placeholderElement ? shownItems.count - items.length : 0;
+  const placeholdersCount = placeholder ? shownItems.count - items.length : 0;
 
   useSwipe(swipeable ? animatedList : null, handleForward, handleBack);
 
@@ -77,7 +77,7 @@ const InfiniteSlider: React.FC<SlideableProps> = ({
           {placeholdersCount > 0 &&
             Array.from(Array(placeholdersCount).keys()).map(key => (
               <li key={key} className={styles['listItem']} style={{ marginRight: `${itemsGap}px` }}>
-                {placeholderElement}
+                {placeholder}
               </li>
             ))}
         </ul>

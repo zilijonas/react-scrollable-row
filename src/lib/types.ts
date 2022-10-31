@@ -44,7 +44,7 @@ export interface SlideableProps {
    * JSX Element to display when `looped` is set to `false`
    * and there are less items in the list than in the configuration for the current scroll width.
    */
-  placeholderElement?: JSX.Element;
+  placeholder?: JSX.Element;
   /**
    * Style of the arrow buttons.
    */
