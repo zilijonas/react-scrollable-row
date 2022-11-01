@@ -1,19 +1,19 @@
 import { delay, delayTillNextFrame } from '../async';
 import { Order } from './Order';
 
-export type AnimatedButtons = [HTMLDivElement, HTMLDivElement] | null;
+export type ListButtons = [HTMLDivElement, HTMLDivElement] | null;
 
 export class AnimatedList {
   public shownItemsCount: number;
   public element: HTMLDivElement;
   private _order: Order;
   private _itemMargin: number;
-  private _buttons: AnimatedButtons | null;
+  private _buttons: ListButtons | null;
   private _animationTime: number;
 
   constructor(
     listEl: HTMLDivElement,
-    buttons: AnimatedButtons | null,
+    buttons: ListButtons | null,
     shownItemsCount: number,
     itemMargin: number,
     animationTime: number,
