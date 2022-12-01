@@ -10,7 +10,7 @@ const DEFAULT_STATE: State = { shift: 0 };
 export const useScrollReducer = (animatedList: AnimatedList | null, type: SlideType) =>
   useReducer(reducer(animatedList, type), DEFAULT_STATE);
 
-const reducer = (animatedList: AnimatedList | null, type: SlideType) => (state: State, action: Action) => {
+const reducer = (animatedList: AnimatedList | null, slideType: SlideType) => (state: State, action: Action) => {
   if (!animatedList) {
     return state;
   }
@@ -24,19 +24,19 @@ const reducer = (animatedList: AnimatedList | null, type: SlideType) => (state: 
       const preEndWillBeReached =
         state.shift + animatedList.stepSize * 2 + animatedList.remainderStepSize >= animatedList.listWidth;
 
-      if (type === 'finite' && endReached) {
+      if (slideType === 'finite' && endReached) {
         animatedList.disableForward();
         return state;
       }
 
-      if (type === 'finite' && endWillBeReached) {
+      if (slideType === 'finite' && endWillBeReached) {
         const nextShift = state.shift + animatedList.remainderStepSize;
         animatedList.slide(nextShift);
         animatedList.disableForward();
         return { ...state, shift: nextShift };
       }
 
-      if (type === 'infinite' && preEndWillBeReached) {
+      if ((slideType === 'infinite' || slideType === 'auto') && preEndWillBeReached) {
         const nextShift = state.shift + animatedList.stepSize;
         animatedList.slideAndSwapForward(nextShift);
         return { ...state, shift: 0 };
@@ -51,18 +51,18 @@ const reducer = (animatedList: AnimatedList | null, type: SlideType) => (state: 
       const startReached = state.shift <= 0;
       const startWillBeReached = state.shift - animatedList.stepSize <= 0;
 
-      if (type === 'finite' && startReached) {
+      if (slideType === 'finite' && startReached) {
         return state;
       }
 
-      if (type === 'finite' && startWillBeReached) {
+      if (slideType === 'finite' && startWillBeReached) {
         const nextShift = 0;
         animatedList.slide(nextShift);
         animatedList.disableBack();
         return { ...state, shift: nextShift };
       }
 
-      if (type === 'infinite' && startReached) {
+      if ((slideType === 'infinite' || slideType === 'auto') && startReached) {
         const nextShift = animatedList.stepSize;
         animatedList.slideAndSwapBack(nextShift);
         return { ...state, shift: 0 };

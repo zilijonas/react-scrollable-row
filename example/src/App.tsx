@@ -18,6 +18,18 @@ export const App: React.FC = () => {
         <Slideable
           key={width}
           width={width}
+          itemsGap={8}
+          type="auto"
+          displayConfig={2}
+          items={items.slice(0, 3).map(item => (
+            <ListItem key={item}>{item}</ListItem>
+          ))}
+        />
+      </div>
+      <div className="listContainer">
+        <Slideable
+          key={width}
+          width={width}
           placeholder={<PlaceholderItem />}
           itemsGap={8}
           items={items.slice(0, 1).map(item => (

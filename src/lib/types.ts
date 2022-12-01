@@ -8,7 +8,7 @@ export type DisplayConfig = ({ [pixels: number]: number } & { max: number }) | n
 
 export type SlideDirection = 'forward' | 'back';
 
-export type SlideType = 'finite' | 'infinite';
+export type SlideType = 'finite' | 'infinite' | 'auto' | 'auto-reverse';
 
 export interface SlideableProps {
   /**
@@ -64,7 +64,11 @@ export interface SlideableProps {
   /**
    * Time of the slide animation, ms. Defaults to 600.
    */
-  animationTime?: number;
+  slideTime?: number;
+  /**
+   * Time of the interval between auto slides, ms. Defaults to 3000.
+   */
+  intervalTime?: number;
   /**
    * Callback function that will be called when the list is scrolled.
    */

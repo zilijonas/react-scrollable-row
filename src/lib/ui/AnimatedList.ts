@@ -16,14 +16,15 @@ export class AnimatedList {
     buttons: ListButtons | null,
     shownItemsCount: number,
     itemMargin: number,
-    animationTime: number,
+    slideTime: number,
+    order: Order,
   ) {
     this.shownItemsCount = shownItemsCount;
     this.element = listEl;
     this._buttons = buttons;
     this._itemMargin = itemMargin;
-    this._animationTime = animationTime;
-    this._order = new Order(listEl, shownItemsCount);
+    this._animationTime = slideTime;
+    this._order = order;
   }
 
   get length() {

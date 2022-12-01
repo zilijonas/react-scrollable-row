@@ -66,7 +66,7 @@ const Example = () => (
     itemsGap={8}
     // Time of the slide animation, ms.
     // Defaults to 600.
-    animationTime={600}
+    slideTime={600}
     // You can set how many items will list display at given resolutions.
     // Defaults to the current value.
     displayConfig={{ 480: 2, 768: 3, 1200: 4, max: 5 }}

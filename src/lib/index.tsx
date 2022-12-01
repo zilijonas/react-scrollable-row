@@ -8,6 +8,7 @@ import { useShownItemsCount } from './hooks/useShownItemsCount';
 import { useSwipe } from './hooks/useSwipe';
 import { SlideableProps } from './types';
 import { AnimatedList, ListButtons } from './ui/AnimatedList';
+import { Order } from './ui/Order';
 
 export { DisplayConfig, SlideableProps, SlideDirection, SlideType } from './types';
 
@@ -24,7 +25,8 @@ export const Slideable: React.NamedExoticComponent<SlideableProps> = React.memo(
     customButtonRight,
     placeholder,
     itemsGap = 0,
-    animationTime = 600,
+    slideTime = 600,
+    intervalTime = 3000,
     displayConfig = DEFAULT_DISPLAY_CONFIG,
     onScrolled,
   }) => {
@@ -35,9 +37,16 @@ export const Slideable: React.NamedExoticComponent<SlideableProps> = React.memo(
     const animatedList = useMemo(() => {
       if (!list || !shownItems.count) return null;
       const buttons = noButtons ? null : ([leftButtonRef.current, rightButtonRef.current] as ListButtons);
-      return new AnimatedList(list, buttons, shownItems.count, itemsGap, animationTime);
-    }, [list, shownItems.count, itemsGap, noButtons, animationTime]);
-    const scroll = useScroll(animatedList, type, animationTime);
+      return new AnimatedList(
+        list,
+        buttons,
+        shownItems.count,
+        itemsGap,
+        slideTime,
+        new Order(list, shownItems.count, items.length),
+      );
+    }, [list, shownItems.count, items.length, itemsGap, noButtons, slideTime]);
+    const scroll = useScroll(animatedList, type, slideTime, intervalTime);
 
     const placeholdersCount = placeholder ? shownItems.count - items.length : 0;
     const listItems = type === 'finite' ? items : normalizeListLength(items, shownItems.count * 2);

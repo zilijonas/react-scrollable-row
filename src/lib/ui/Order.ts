@@ -4,10 +4,12 @@ export class Order {
   private _listEl: HTMLDivElement | null;
   private _orderedPositions: number[];
   private _locked: number;
+  private _originalItemsCount: number;
 
-  constructor(listEl: HTMLDivElement | null, locked: number) {
+  constructor(listEl: HTMLDivElement | null, locked: number, originalItemsCount: number) {
     this._listEl = listEl;
     this._locked = locked;
+    this._originalItemsCount = originalItemsCount;
     delayTillNextFrame(() => {
       this._orderedPositions = Array.from(Array(countListItems(listEl)).keys());
     });
@@ -18,7 +20,8 @@ export class Order {
   }
 
   reorder(slicePositionShift: number = 0) {
-    this._orderedPositions = divideAtXAndSwap(this._locked + slicePositionShift, this._orderedPositions);
+    const x = this._locked === 1 ? this._originalItemsCount - 1 : this._locked + slicePositionShift;
+    this._orderedPositions = divideAtXAndSwap(x + slicePositionShift, this._orderedPositions);
     updateListOrder(this._listEl, this._orderedPositions);
   }
 }
