@@ -7,6 +7,7 @@
 ## Demo
 
 ![@zilijonas/react-slideable horizontal](https://github.com/zilijonas/react-slideable/blob/master/slideable-demo.gif?raw=true)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fzilijonas%2Freact-slideable.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fzilijonas%2Freact-slideable?ref=badge_shield)
 
 [Demo](https://zilijonas.github.io/react-slideable/)
 
@@ -85,3 +86,6 @@ const Example = () => (
 ## License
 
 MIT © [zilijonas](https://github.com/zilijonas)
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fzilijonas%2Freact-slideable.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fzilijonas%2Freact-slideable?ref=badge_large)
